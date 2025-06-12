@@ -1,11 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useQuery } from "@tanstack/react-query";
-import { X, Send } from "lucide-react";
+import { X, Send, Loader2 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { ChatMessage } from "@shared/schema";
 import { mockArtistProfile } from "@/lib/mockData";
+import { useAIChat } from "@/hooks/useAIChat";
+import { useArtist } from "@/contexts/ArtistContext";
 
 interface MCChatDockProps {
   isOpen: boolean;
@@ -15,18 +16,25 @@ interface MCChatDockProps {
 export default function MCChatDock({ isOpen, onClose }: MCChatDockProps) {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [isThinking, setIsThinking] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const scrollTimeoutRef = useRef<NodeJS.Timeout>();
+  
+  const { sendMessage } = useAIChat();
+  const { selectedArtist, artistStats } = useArtist();
 
-  const { data: initialMessages } = useQuery({
-    queryKey: ["/api/mock/chat-messages"],
-  });
-
+  // Initialize with a welcome message
   useEffect(() => {
-    if (initialMessages) {
-      setMessages(initialMessages);
+    if (messages.length === 0) {
+      setMessages([{
+        id: "welcome",
+        sender: "mc",
+        message: "Hi! I'm your Music Concierge. I'm here to help you grow your music career. Ask me anything about marketing, touring, social media strategy, or the music industry!",
+        timestamp: new Date(),
+      }]);
     }
-  }, [initialMessages]);
+  }, []);
 
   useEffect(() => {
     if (isOpen && closeButtonRef.current) {
@@ -34,12 +42,38 @@ export default function MCChatDock({ isOpen, onClose }: MCChatDockProps) {
     }
   }, [isOpen]);
 
+  // Improved scroll behavior - only scroll for new messages
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+    // Only scroll if there are multiple messages and we're not at the initial state
+    if (messages.length > 1 && isOpen) {
+      // Clear any existing timeout
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+      
+      // Delay scroll slightly to prevent jarring movement
+      scrollTimeoutRef.current = setTimeout(() => {
+        // Only scroll the chat container, not the whole page
+        const chatContainer = messagesEndRef.current?.parentElement?.parentElement;
+        if (chatContainer) {
+          messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
+      }, 100);
+    }
+    
+    return () => {
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+    };
+  }, [messages.length, isOpen]);
 
-  const handleSendMessage = () => {
-    if (!message.trim()) return;
+  const handleSendMessage = async (e?: React.FormEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    if (!message.trim() || isThinking) return;
 
     const newMessage: ChatMessage = {
       id: Date.now().toString(),
@@ -49,31 +83,47 @@ export default function MCChatDock({ isOpen, onClose }: MCChatDockProps) {
     };
 
     setMessages(prev => [...prev, newMessage]);
+    const currentMessage = message.trim();
     setMessage("");
+    setIsThinking(true);
 
-    // Simulate MC response
-    setTimeout(() => {
-      const responses = [
-        "That's a great question! Let me analyze your current data and provide some insights.",
-        "Based on your recent activity, I'd recommend focusing on engagement with your top-performing content.",
-        "I'll help you optimize your strategy. Here are some personalized suggestions for your music career.",
-        "Great point! Your fan engagement metrics show promising trends in that area.",
-      ];
-      
-      const mcResponse: ChatMessage = {
+    try {
+      // Send to AI service with context
+      const aiResponse = await sendMessage(currentMessage, {
+        conversationHistory: messages,
+        context: {
+          artistName: selectedArtist?.name,
+          artistStats: artistStats,
+        },
+      });
+
+      if (aiResponse) {
+        const mcResponse: ChatMessage = {
+          id: (Date.now() + 1).toString(),
+          sender: "mc",
+          message: aiResponse,
+          timestamp: new Date(),
+        };
+        setMessages(prev => [...prev, mcResponse]);
+      }
+    } catch (error: any) {
+      console.error('AI Chat Error:', error);
+      const errorMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
         sender: "mc",
-        message: responses[Math.floor(Math.random() * responses.length)],
+        message: error.message || "I apologize, but I'm having trouble connecting right now. Please try again in a moment.",
         timestamp: new Date(),
       };
-
-      setMessages(prev => [...prev, mcResponse]);
-    }, 1000);
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setIsThinking(false);
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
+      e.stopPropagation();
       handleSendMessage();
     }
   };
@@ -150,10 +200,27 @@ export default function MCChatDock({ isOpen, onClose }: MCChatDockProps) {
               )}
             </div>
           ))}
+          
+          {/* Thinking animation */}
+          {isThinking && (
+            <div className="flex items-start space-x-3">
+              <div className="w-8 h-8 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center flex-shrink-0">
+                <span className="text-white text-xs font-bold">MC</span>
+              </div>
+              <div className="bg-muted text-foreground rounded-xl p-4 flex items-center space-x-2">
+                <div className="flex space-x-1">
+                  <span className="w-2 h-2 bg-foreground/60 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
+                  <span className="w-2 h-2 bg-foreground/60 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
+                  <span className="w-2 h-2 bg-foreground/60 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+                </div>
+              </div>
+            </div>
+          )}
+          
           <div ref={messagesEndRef} />
         </div>
         
-        <div className="p-6 border-t border-border">
+        <form onSubmit={handleSendMessage} className="p-6 border-t border-border">
           <div className="flex space-x-3">
             <Input
               type="text"
@@ -162,16 +229,21 @@ export default function MCChatDock({ isOpen, onClose }: MCChatDockProps) {
               onChange={(e) => setMessage(e.target.value)}
               onKeyPress={handleKeyPress}
               className="flex-1"
+              disabled={isThinking}
             />
             <Button 
-              onClick={handleSendMessage}
-              disabled={!message.trim()}
+              type="submit"
+              disabled={!message.trim() || isThinking}
               className="bg-primary hover:bg-primary/90 text-primary-foreground"
             >
-              <Send className="w-4 h-4" />
+              {isThinking ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Send className="w-4 h-4" />
+              )}
             </Button>
           </div>
-        </div>
+        </form>
       </CardContent>
     </div>
   );

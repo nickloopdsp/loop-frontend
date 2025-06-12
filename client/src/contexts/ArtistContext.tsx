@@ -1,0 +1,126 @@
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+
+export interface Artist {
+  uuid: string;
+  name: string;
+  image?: string;
+  imageUrl?: string;
+  slug?: string;
+  verified?: boolean;
+  genres?: string[];
+  country?: string;
+}
+
+export interface ArtistStats {
+  spotify?: {
+    followers: number;
+    monthlyListeners: number;
+    popularity: number;
+  };
+  instagram?: {
+    followers: number;
+    engagement: number;
+  };
+  tiktok?: {
+    followers: number;
+    likes: number;
+  };
+  youtube?: {
+    subscribers: number;
+    views: number;
+  };
+}
+
+interface ArtistContextType {
+  selectedArtist: Artist | null;
+  artistStats: ArtistStats | null;
+  isLoading: boolean;
+  error: string | null;
+  selectArtist: (artist: Artist) => void;
+  clearArtist: () => void;
+  refreshStats: () => Promise<void>;
+}
+
+const ArtistContext = createContext<ArtistContextType | undefined>(undefined);
+
+export const useArtist = () => {
+  const context = useContext(ArtistContext);
+  if (!context) {
+    throw new Error('useArtist must be used within an ArtistProvider');
+  }
+  return context;
+};
+
+interface ArtistProviderProps {
+  children: ReactNode;
+}
+
+export const ArtistProvider: React.FC<ArtistProviderProps> = ({ children }) => {
+  const [selectedArtist, setSelectedArtist] = useState<Artist | null>(() => {
+    // Load from localStorage if available
+    const saved = localStorage.getItem('selectedArtist');
+    return saved ? JSON.parse(saved) : null;
+  });
+  const [artistStats, setArtistStats] = useState<ArtistStats | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchArtistStats = async (uuid: string) => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const response = await fetch(`/api/soundcharts/artist/${uuid}/stats`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch artist stats');
+      }
+      const stats = await response.json();
+      setArtistStats(stats);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+      console.error('Error fetching artist stats:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const selectArtist = (artist: Artist) => {
+    setSelectedArtist(artist);
+    localStorage.setItem('selectedArtist', JSON.stringify(artist));
+    fetchArtistStats(artist.uuid);
+  };
+
+  const clearArtist = () => {
+    setSelectedArtist(null);
+    setArtistStats(null);
+    localStorage.removeItem('selectedArtist');
+  };
+
+  const refreshStats = async () => {
+    if (selectedArtist) {
+      await fetchArtistStats(selectedArtist.uuid);
+    }
+  };
+
+  // Fetch stats on mount if artist is selected
+  useEffect(() => {
+    if (selectedArtist) {
+      fetchArtistStats(selectedArtist.uuid);
+    }
+  }, []);
+
+  return (
+    <ArtistContext.Provider
+      value={{
+        selectedArtist,
+        artistStats,
+        isLoading,
+        error,
+        selectArtist,
+        clearArtist,
+        refreshStats,
+      }}
+    >
+      {children}
+    </ArtistContext.Provider>
+  );
+}; 

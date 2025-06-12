@@ -1,43 +1,80 @@
 import { Button } from "@/components/ui/button";
-import { Search, Bell } from "lucide-react";
+import { Bell, Sun, Moon, Music } from "lucide-react";
+import { useTheme } from "@/providers/ThemeProvider";
+import { ArtistSelector } from "@/components/ArtistSelector";
+import { useArtist } from "@/contexts/ArtistContext";
+import { useState, useRef } from "react";
 
 interface TopBarProps {
   onOpenChat: () => void;
 }
 
 export default function TopBar({ onOpenChat }: TopBarProps) {
+  const { theme, setTheme } = useTheme();
+  const { selectedArtist } = useArtist();
+  const [isArtistSelectorOpen, setIsArtistSelectorOpen] = useState(false);
+  const avatarRef = useRef<HTMLButtonElement>(null);
+
+  const toggleTheme = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark');
+  };
+
   return (
-    <header className="bg-sidebar-background border-b border-sidebar-border px-6 py-4" role="banner">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold text-foreground">Artist Dashboard</h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            Welcome back, Alex! Here's your performance overview.
-          </p>
-        </div>
+    <header 
+      className="px-6 py-4 flex-shrink-0" 
+      role="banner"
+    >
+      <div className="flex items-center justify-end">
         <div className="flex items-center space-x-4">
+          {/* Theme Toggle Button */}
           <Button
             variant="ghost"
             size="icon"
-            className="text-muted-foreground hover:text-foreground"
-            aria-label="Search"
+            className="text-gray-400 hover:text-white dark:hover:text-white light:text-gray-600 light:hover:text-gray-900 rounded-full"
+            onClick={toggleTheme}
+            aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
           >
-            <Search className="w-5 h-5" />
+            {theme === 'dark' ? (
+              <Sun className="w-5 h-5" />
+            ) : (
+              <Moon className="w-5 h-5" />
+            )}
           </Button>
+
           <Button
             variant="ghost"
             size="icon"
-            className="text-muted-foreground hover:text-foreground"
+            className="text-gray-400 hover:text-white dark:hover:text-white light:text-gray-600 light:hover:text-gray-900 rounded-full"
             aria-label="Notifications"
           >
             <Bell className="w-5 h-5" />
           </Button>
-          <Button 
-            onClick={onOpenChat}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground"
+          
+          {/* User Avatar - shows selected artist or default */}
+          <button
+            ref={avatarRef}
+            onClick={() => setIsArtistSelectorOpen(!isArtistSelectorOpen)}
+            className="w-10 h-10 rounded-full overflow-hidden bg-white/10 hover:ring-2 hover:ring-white/30 transition-all cursor-pointer"
           >
-            MC Assistant
-          </Button>
+            {selectedArtist?.image || selectedArtist?.imageUrl ? (
+            <img 
+                src={selectedArtist.image || selectedArtist.imageUrl} 
+                alt={selectedArtist.name}
+              className="w-full h-full object-cover"
+            />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-500 to-blue-500">
+                <Music className="w-5 h-5 text-white" />
+          </div>
+            )}
+          </button>
+
+          {/* Artist Selector Popup */}
+          <ArtistSelector
+            isOpen={isArtistSelectorOpen}
+            onClose={() => setIsArtistSelectorOpen(false)}
+            anchorEl={avatarRef.current}
+          />
         </div>
       </div>
     </header>

@@ -3,64 +3,94 @@
 @tailwind utilities;
 
 :root {
-  --background: hsl(222, 84%, 5%);
-  --foreground: hsl(210, 40%, 98%);
-  --muted: hsl(217, 33%, 17%);
-  --muted-foreground: hsl(215, 20%, 65%);
-  --popover: hsl(224, 71%, 4%);
-  --popover-foreground: hsl(210, 40%, 98%);
-  --card: hsl(217, 33%, 17%);
-  --card-foreground: hsl(210, 40%, 98%);
-  --border: hsl(217, 33%, 17%);
-  --input: hsl(217, 33%, 17%);
-  --primary: hsl(236, 72%, 59%);
-  --primary-foreground: hsl(210, 40%, 98%);
-  --secondary: hsl(217, 33%, 17%);
-  --secondary-foreground: hsl(210, 40%, 98%);
-  --accent: hsl(261, 83%, 58%);
-  --accent-foreground: hsl(210, 40%, 98%);
-  --destructive: hsl(0, 62%, 30%);
-  --destructive-foreground: hsl(210, 40%, 98%);
-  --ring: hsl(236, 72%, 59%);
-  --radius: 0.75rem;
-  --sidebar-background: hsl(217, 33%, 17%);
-  --sidebar-foreground: hsl(210, 40%, 98%);
-  --sidebar-primary: hsl(236, 72%, 59%);
-  --sidebar-primary-foreground: hsl(210, 40%, 98%);
-  --sidebar-accent: hsl(217, 33%, 17%);
-  --sidebar-accent-foreground: hsl(210, 40%, 98%);
-  --sidebar-border: hsl(217, 33%, 17%);
-  --sidebar-ring: hsl(236, 72%, 59%);
+  --background: hsl(0, 0%, 4%);
+  --foreground: hsl(0, 0%, 98%);
+  --muted: hsl(0, 0%, 8%);
+  --muted-foreground: hsl(0, 0%, 64%);
+  --popover: hsl(0, 0%, 4%);
+  --popover-foreground: hsl(0, 0%, 98%);
+  --card: hsla(0, 0%, 100%, 0.02);
+  --card-foreground: hsl(0, 0%, 98%);
+  --border: hsla(0, 0%, 100%, 0.06);
+  --input: hsla(0, 0%, 100%, 0.05);
+  --primary: hsl(142, 70%, 45%);
+  --primary-foreground: hsl(0, 0%, 98%);
+  --secondary: hsla(0, 0%, 100%, 0.05);
+  --secondary-foreground: hsl(0, 0%, 98%);
+  --accent: hsl(142, 70%, 45%);
+  --accent-foreground: hsl(0, 0%, 98%);
+  --destructive: hsl(0, 84%, 60%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(142, 70%, 45%);
+  --radius: 1.5rem;
+  --sidebar-background: transparent;
+  --sidebar-foreground: hsl(0, 0%, 98%);
+  --sidebar-primary: hsl(142, 70%, 45%);
+  --sidebar-primary-foreground: hsl(0, 0%, 98%);
+  --sidebar-accent: transparent;
+  --sidebar-accent-foreground: hsl(0, 0%, 98%);
+  --sidebar-border: transparent;
+  --sidebar-ring: hsl(142, 70%, 45%);
+}
+
+.light {
+  --background: hsl(0, 0%, 98%);
+  --foreground: hsl(0, 0%, 9%);
+  --muted: hsl(0, 0%, 96%);
+  --muted-foreground: hsl(0, 0%, 45%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(0, 0%, 9%);
+  --card: hsla(0, 0%, 100%, 0.8);
+  --card-foreground: hsl(0, 0%, 9%);
+  --border: hsla(0, 0%, 0%, 0.08);
+  --input: hsla(0, 0%, 0%, 0.04);
+  --primary: hsl(142, 70%, 45%);
+  --primary-foreground: hsl(0, 0%, 100%);
+  --secondary: hsla(0, 0%, 0%, 0.05);
+  --secondary-foreground: hsl(0, 0%, 9%);
+  --accent: hsl(142, 70%, 45%);
+  --accent-foreground: hsl(0, 0%, 100%);
+  --destructive: hsl(0, 84%, 60%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(142, 70%, 45%);
+  --sidebar-background: transparent;
+  --sidebar-foreground: hsl(0, 0%, 9%);
+  --sidebar-primary: hsl(142, 70%, 45%);
+  --sidebar-primary-foreground: hsl(0, 0%, 100%);
+  --sidebar-accent: transparent;
+  --sidebar-accent-foreground: hsl(0, 0%, 9%);
+  --sidebar-border: transparent;
+  --sidebar-ring: hsl(142, 70%, 45%);
 }
 
 .dark {
-  --background: hsl(222, 84%, 5%);
-  --foreground: hsl(210, 40%, 98%);
-  --muted: hsl(217, 33%, 17%);
-  --muted-foreground: hsl(215, 20%, 65%);
-  --popover: hsl(224, 71%, 4%);
-  --popover-foreground: hsl(210, 40%, 98%);
-  --card: hsl(217, 33%, 17%);
-  --card-foreground: hsl(210, 40%, 98%);
-  --border: hsl(217, 33%, 17%);
-  --input: hsl(217, 33%, 17%);
-  --primary: hsl(236, 72%, 59%);
-  --primary-foreground: hsl(210, 40%, 98%);
-  --secondary: hsl(217, 33%, 17%);
-  --secondary-foreground: hsl(210, 40%, 98%);
-  --accent: hsl(261, 83%, 58%);
-  --accent-foreground: hsl(210, 40%, 98%);
-  --destructive: hsl(0, 62%, 30%);
-  --destructive-foreground: hsl(210, 40%, 98%);
-  --ring: hsl(236, 72%, 59%);
-  --sidebar-background: hsl(217, 33%, 17%);
-  --sidebar-foreground: hsl(210, 40%, 98%);
-  --sidebar-primary: hsl(236, 72%, 59%);
-  --sidebar-primary-foreground: hsl(210, 40%, 98%);
-  --sidebar-accent: hsl(217, 33%, 17%);
-  --sidebar-accent-foreground: hsl(210, 40%, 98%);
-  --sidebar-border: hsl(217, 33%, 17%);
-  --sidebar-ring: hsl(236, 72%, 59%);
+  --background: hsl(0, 0%, 4%);
+  --foreground: hsl(0, 0%, 98%);
+  --muted: hsl(0, 0%, 8%);
+  --muted-foreground: hsl(0, 0%, 64%);
+  --popover: hsl(0, 0%, 4%);
+  --popover-foreground: hsl(0, 0%, 98%);
+  --card: hsla(0, 0%, 100%, 0.02);
+  --card-foreground: hsl(0, 0%, 98%);
+  --border: hsla(0, 0%, 100%, 0.06);
+  --input: hsla(0, 0%, 100%, 0.05);
+  --primary: hsl(142, 70%, 45%);
+  --primary-foreground: hsl(0, 0%, 98%);
+  --secondary: hsla(0, 0%, 100%, 0.05);
+  --secondary-foreground: hsl(0, 0%, 98%);
+  --accent: hsl(142, 70%, 45%);
+  --accent-foreground: hsl(0, 0%, 98%);
+  --destructive: hsl(0, 84%, 60%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(142, 70%, 45%);
+  --sidebar-background: transparent;
+  --sidebar-foreground: hsl(0, 0%, 98%);
+  --sidebar-primary: hsl(142, 70%, 45%);
+  --sidebar-primary-foreground: hsl(0, 0%, 98%);
+  --sidebar-accent: transparent;
+  --sidebar-accent-foreground: hsl(0, 0%, 98%);
+  --sidebar-border: transparent;
+  --sidebar-ring: hsl(142, 70%, 45%);
 }
 
 @layer base {
@@ -75,20 +105,297 @@
 }
 
 @layer utilities {
+  /* Glassmorphism utilities - Refined for better visual appeal */
+  .glass-widget {
+    display: flex;
+    padding: 32px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+    align-self: stretch;
+    border-radius: 24px;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .dark .glass-widget {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: 
+      0 8px 32px 0 rgba(0, 0, 0, 0.37),
+      inset 0 2px 4px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  .light .glass-widget {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.2) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 
+      0 8px 32px 0 rgba(0, 0, 0, 0.05),
+      inset 0 2px 4px 0 rgba(255, 255, 255, 0.6);
+  }
+
+  .glass-widget-compact {
+    display: flex;
+    padding: 20px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    align-self: stretch;
+    border-radius: 20px;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .dark .glass-widget-compact {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: 
+      0 8px 32px 0 rgba(0, 0, 0, 0.37),
+      inset 0 2px 4px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  .light .glass-widget-compact {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.2) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 
+      0 8px 32px 0 rgba(0, 0, 0, 0.05),
+      inset 0 2px 4px 0 rgba(255, 255, 255, 0.6);
+  }
+
+  .glass-tabs {
+    display: flex;
+    align-items: center;
+    align-self: stretch;
+    border-radius: 100px;
+  }
+
+  .dark .glass-tabs {
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+  }
+
+  .light .glass-tabs {
+    background: rgba(0, 0, 0, 0.02);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+  }
+
+  .glass-card {
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  .dark .glass-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.02) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: 
+      0 4px 16px 0 rgba(0, 0, 0, 0.24),
+      inset 0 1px 2px 0 rgba(255, 255, 255, 0.04);
+  }
+
+  .light .glass-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.15) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 
+      0 4px 16px 0 rgba(0, 0, 0, 0.04),
+      inset 0 1px 2px 0 rgba(255, 255, 255, 0.5);
+  }
+
+  .glass-input {
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    transition: all 0.2s ease;
+  }
+
+  .dark .glass-input {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .light .glass-input {
+    background: rgba(0, 0, 0, 0.02);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+  }
+
+  .glass-input:hover {
+    transform: translateY(-1px);
+  }
+
+  .dark .glass-input:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+
+  .light .glass-input:hover {
+    background: rgba(0, 0, 0, 0.03);
+    border-color: rgba(0, 0, 0, 0.12);
+  }
+
+  .glass-input:focus {
+    border-color: hsl(142, 70%, 45%);
+    box-shadow: 0 0 0 3px hsla(142, 70%, 45%, 0.1);
+  }
+
+  .dark .glass-input:focus {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .light .glass-input:focus {
+    background: rgba(0, 0, 0, 0.01);
+  }
+
+  .glass-button {
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .dark .glass-button {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .light .glass-button {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.04) 0%, rgba(0, 0, 0, 0.02) 100%);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+  }
+
+  .glass-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    transition: left 0.5s ease;
+  }
+
+  .dark .glass-button::before {
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  }
+
+  .light .glass-button::before {
+    background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.05), transparent);
+  }
+
+  .glass-button:hover {
+    transform: translateY(-1px);
+  }
+
+  .dark .glass-button:hover {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.08) 100%);
+    border-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.15);
+  }
+
+  .light .glass-button:hover {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.08) 0%, rgba(0, 0, 0, 0.04) 100%);
+    border-color: rgba(0, 0, 0, 0.12);
+    box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.08);
+  }
+
+  .glass-button:hover::before {
+    left: 100%;
+  }
+
+  /* Widget responsive behavior */
+  .widget-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 100%;
+    height: 100%;
+    position: relative;
+    min-width: 0;
+    overflow: hidden;
+  }
+  
+  .widget-card:hover {
+    transform: translateY(-2px) scale(1.005);
+  }
+
+  .widget-card > * {
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+  }
+
+  /* Dashboard grid responsive improvements */
+  #dashboard-grid {
+    min-width: 0;
+    overflow-x: auto;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 1024px) {
+    .glass-widget {
+      padding: 30px;
+      gap: 20px;
+    }
+    
+    .glass-widget-compact {
+      padding: 20px;
+      gap: 14px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .glass-widget {
+      padding: 20px;
+      gap: 16px;
+      border-radius: 24px;
+    }
+    
+    .glass-widget-compact {
+      padding: 16px;
+      gap: 12px;
+      border-radius: 20px;
+    }
+
+    #dashboard-grid {
+      gap: 16px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .glass-widget {
+      padding: 16px;
+      gap: 12px;
+      border-radius: 20px;
+    }
+    
+    .glass-widget-compact {
+      padding: 12px;
+      gap: 8px;
+      border-radius: 16px;
+    }
+
+    #dashboard-grid {
+      gap: 12px;
+    }
+  }
+
   .drag-handle:hover {
     cursor: grab;
   }
   
   .drag-handle:active {
     cursor: grabbing;
-  }
-  
-  .widget-card {
-    transition: all 0.2s ease;
-  }
-  
-  .widget-card:hover {
-    transform: translateY(-2px);
   }
   
   .chat-dock {
@@ -138,5 +445,384 @@
       opacity: 1;
       transform: translateY(0);
     }
+  }
+
+  /* Line chart glow animations */
+  @keyframes lineGlow {
+    0% {
+      filter: drop-shadow(0 0 0px currentColor);
+      opacity: 0.8;
+    }
+    50% {
+      filter: drop-shadow(0 0 8px currentColor);
+      opacity: 1;
+    }
+    100% {
+      filter: drop-shadow(0 0 0px currentColor);
+      opacity: 0.8;
+    }
+  }
+
+  .animate-glow-instagram {
+    animation: lineGlow 8s ease-in-out infinite;
+    animation-delay: 0s;
+  }
+
+  .animate-glow-tiktok {
+    animation: lineGlow 8s ease-in-out infinite;
+    animation-delay: 1.6s;
+  }
+
+  .animate-glow-spotify {
+    animation: lineGlow 8s ease-in-out infinite;
+    animation-delay: 3.2s;
+  }
+
+  .animate-glow-apple {
+    animation: lineGlow 8s ease-in-out infinite;
+    animation-delay: 4.8s;
+  }
+
+  .animate-glow-youtube {
+    animation: lineGlow 8s ease-in-out infinite;
+    animation-delay: 6.4s;
+  }
+
+  /* Drag and drop utilities */
+  .drag-preview {
+    transform: rotate(5deg);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+
+  .drop-zone-active {
+    position: relative;
+  }
+
+  .drop-zone-active::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #03FF96;
+    border-radius: 1px;
+    z-index: 10;
+  }
+
+  /* Add this animation for the globe pulse effect */
+  @keyframes pulse {
+    0% {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 0.5;
+    }
+    50% {
+      transform: translate(-50%, -50%) scale(2);
+      opacity: 0.2;
+    }
+    100% {
+      transform: translate(-50%, -50%) scale(3);
+      opacity: 0;
+    }
+  }
+
+  /* Sidebar transparency overrides - FORCE COMPLETE TRANSPARENCY */
+  [data-sidebar="sidebar"],
+  [data-sidebar="sidebar"] * {
+    background: transparent !important;
+    background-color: transparent !important;
+  }
+  
+  /* Force all sidebar elements to be transparent */
+  .group[data-variant="sidebar"] > div > div[data-sidebar="sidebar"] {
+    background: transparent !important;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+  
+  /* Remove any background from sidebar container */
+  .group.peer {
+    background: transparent !important;
+  }
+  
+  /* Ensure sidebar doesn't block the gradient */
+  [data-side="left"] {
+    background: transparent !important;
+  }
+  
+  /* Force transparency on all sidebar-related elements */
+  .bg-sidebar,
+  .bg-sidebar-background,
+  .bg-sidebar-accent,
+  [class*="bg-sidebar"] {
+    background: transparent !important;
+    background-color: transparent !important;
+  }
+  
+  /* Remove background from SidebarInset */
+  .bg-background {
+    background: transparent !important;
+  }
+  
+  /* Force transparency on the sidebar wrapper */
+  [class*="group/sidebar-wrapper"] {
+    background: transparent !important;
+  }
+  
+  /* Override the specific class applying sidebar background */
+  [class*="has-[[data-variant=inset]]:bg-sidebar"] {
+    background: transparent !important;
+  }
+  
+  /* Force transparency on elements with data-variant=inset */
+  [data-variant="inset"] {
+    background: transparent !important;
+  }
+
+  /* Remove all borders from sidebar elements */
+  [data-sidebar],
+  [data-sidebar] *,
+  .group[data-variant="sidebar"],
+  .group[data-variant="sidebar"] * {
+    border: none !important;
+    border-color: transparent !important;
+    border-width: 0 !important;
+  }
+  
+  /* Specifically target the sidebar container borders */
+  .group[data-side="left"] {
+    border-right: none !important;
+  }
+  
+  .group[data-side="right"] {
+    border-left: none !important;
+  }
+  
+  /* Remove borders from sidebar inset */
+  [class*="border-r"],
+  [class*="border-l"] {
+    border: none !important;
+  }
+
+  /* Additional glass morphism utilities */
+  .glass-panel {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0.01) 100%);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: 16px;
+  }
+
+  .glass-item {
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    transition: all 0.2s ease;
+  }
+
+  .glass-item:hover {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.05);
+    transform: translateY(-1px);
+  }
+
+  .glass-button-mc {
+    background: linear-gradient(135deg, rgba(3, 255, 150, 0.1) 0%, rgba(3, 255, 150, 0.05) 100%);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(3, 255, 150, 0.2);
+    color: #03FF96;
+    transition: all 0.3s ease;
+  }
+
+  .glass-button-mc:hover {
+    background: linear-gradient(135deg, rgba(3, 255, 150, 0.2) 0%, rgba(3, 255, 150, 0.1) 100%);
+    border-color: rgba(3, 255, 150, 0.5);
+    box-shadow: 0 0 20px rgba(3, 255, 150, 0.4);
+    transform: translateY(-1px);
+  }
+
+  /* Text utility classes */
+  .text-primary-bright {
+    color: hsl(142, 70%, 55%);
+  }
+
+  .text-muted-light {
+    color: hsl(0, 0%, 70%);
+  }
+
+  .glass-button-primary {
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    color: white;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .dark .glass-button-primary {
+    background: linear-gradient(135deg, hsla(142, 70%, 45%, 0.9) 0%, hsla(142, 70%, 40%, 0.9) 100%);
+    border: 1px solid hsla(142, 70%, 50%, 0.5);
+  }
+
+  .light .glass-button-primary {
+    background: linear-gradient(135deg, hsl(142, 70%, 45%) 0%, hsl(142, 70%, 40%) 100%);
+    border: 1px solid hsl(142, 70%, 40%);
+  }
+
+  .glass-button-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+  }
+
+  .glass-button-primary:hover {
+    transform: translateY(-1px);
+  }
+
+  .dark .glass-button-primary:hover {
+    background: linear-gradient(135deg, hsla(142, 70%, 48%, 1) 0%, hsla(142, 70%, 43%, 1) 100%);
+    border-color: hsla(142, 70%, 55%, 0.6);
+    box-shadow: 
+      0 8px 20px 0 hsla(142, 70%, 45%, 0.3),
+      0 4px 12px 0 rgba(0, 0, 0, 0.15);
+  }
+
+  .light .glass-button-primary:hover {
+    background: linear-gradient(135deg, hsl(142, 70%, 50%) 0%, hsl(142, 70%, 45%) 100%);
+    border-color: hsl(142, 70%, 45%);
+    box-shadow: 
+      0 8px 20px 0 hsla(142, 70%, 45%, 0.2),
+      0 4px 12px 0 rgba(0, 0, 0, 0.05);
+  }
+
+  .glass-button-primary:hover::before {
+    left: 100%;
+  }
+
+  /* Additional glass morphism utilities */
+  .glass-panel {
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 16px;
+  }
+
+  .dark .glass-panel {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0.01) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+  }
+
+  .light .glass-panel {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.15) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .glass-item {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 12px;
+    transition: all 0.2s ease;
+  }
+
+  .dark .glass-item {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.03);
+  }
+
+  .light .glass-item {
+    background: rgba(255, 255, 255, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  .glass-item:hover {
+    transform: translateY(-1px);
+  }
+
+  .dark .glass-item:hover {
+    background: rgba(255, 255, 255, 0.03);
+    border-color: rgba(255, 255, 255, 0.05);
+  }
+
+  .light .glass-item:hover {
+    background: rgba(255, 255, 255, 0.35);
+    border-color: rgba(255, 255, 255, 0.25);
+  }
+
+  .glass-button-mc {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: #03FF96;
+    transition: all 0.3s ease;
+  }
+
+  .dark .glass-button-mc {
+    background: linear-gradient(135deg, rgba(3, 255, 150, 0.1) 0%, rgba(3, 255, 150, 0.05) 100%);
+    border: 1px solid rgba(3, 255, 150, 0.2);
+  }
+
+  .light .glass-button-mc {
+    background: linear-gradient(135deg, rgba(3, 255, 150, 0.15) 0%, rgba(3, 255, 150, 0.08) 100%);
+    border: 1px solid rgba(3, 255, 150, 0.3);
+  }
+
+  .glass-button-mc:hover {
+    transform: translateY(-1px);
+  }
+
+  .dark .glass-button-mc:hover {
+    background: linear-gradient(135deg, rgba(3, 255, 150, 0.2) 0%, rgba(3, 255, 150, 0.1) 100%);
+    border-color: rgba(3, 255, 150, 0.5);
+    box-shadow: 0 0 20px rgba(3, 255, 150, 0.4);
+  }
+
+  .light .glass-button-mc:hover {
+    background: linear-gradient(135deg, rgba(3, 255, 150, 0.25) 0%, rgba(3, 255, 150, 0.15) 100%);
+    border-color: rgba(3, 255, 150, 0.6);
+    box-shadow: 0 0 20px rgba(3, 255, 150, 0.3);
+  }
+
+  /* Text utility classes */
+  .text-primary-bright {
+    color: hsl(142, 70%, 55%);
+  }
+
+  .text-muted-light {
+    color: hsl(0, 0%, 70%);
+  }
+
+  /* Sidebar fixes */
+  /* Ensure sidebar trigger remains visible when collapsed */
+  [data-sidebar="trigger"] {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  /* Ensure sidebar footer content doesn't get hidden in icon mode */
+  .group[data-collapsible="icon"] [data-sidebar="footer"] {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  /* Fix main content width */
+  [data-sidebar="inset"] {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  /* Ensure grid container takes full width */
+  #dashboard-grid {
+    width: 100% !important;
+    max-width: 100% !important;
   }
 }

@@ -4,6 +4,8 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/providers/ThemeProvider";
+import { ChatProvider } from "@/contexts/ChatContext";
+import { ArtistProvider } from "@/contexts/ArtistContext";
 import Dashboard from "@/pages/Dashboard";
 import NotFound from "@/pages/not-found";
 
@@ -20,10 +22,14 @@ function App() {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="loop-ui-theme">
       <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <Toaster />
-          <Router />
-        </TooltipProvider>
+        <ArtistProvider>
+        <ChatProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Router />
+          </TooltipProvider>
+        </ChatProvider>
+        </ArtistProvider>
       </QueryClientProvider>
     </ThemeProvider>
   );
