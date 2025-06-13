@@ -45,8 +45,8 @@
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
-   cd LoopDashboard
+   git clone https://github.com/nickloopdsp/Loop.git
+   cd Loop
    ```
 
 2. **Install dependencies**
