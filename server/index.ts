@@ -57,10 +57,9 @@ app.use((req, res, next) => {
     serveStatic(app);
   }
 
-  // ALWAYS serve the app on port 3000
-  // this serves both the API and the client.
+  // Use environment variable for port, with fallback to 3001 to avoid port 3000 conflicts
   // Port 5000 is often used by macOS AirPlay Receiver.
-  const port = 3000;
+  const port = parseInt(process.env.PORT || '3001', 10);
   server.listen({
     port,
     host: "localhost",

@@ -4,6 +4,7 @@ import { useTheme } from "@/providers/ThemeProvider";
 import { ArtistSelector } from "@/components/ArtistSelector";
 import { useArtist } from "@/contexts/ArtistContext";
 import { useState, useRef } from "react";
+import ModeSelector from "@/components/ModeSelector";
 
 interface TopBarProps {
   onOpenChat: () => void;
@@ -24,7 +25,10 @@ export default function TopBar({ onOpenChat }: TopBarProps) {
       className="px-6 py-4 flex-shrink-0" 
       role="banner"
     >
-      <div className="flex items-center justify-end">
+      <div className="flex items-center justify-between">
+        {/* Mode Selector */}
+        <ModeSelector />
+        
         <div className="flex items-center space-x-4">
           {/* Theme Toggle Button */}
           <Button

@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 import { ChatProvider } from "@/contexts/ChatContext";
 import { ArtistProvider } from "@/contexts/ArtistContext";
+import { ModeProvider } from "@/contexts/ModeContext";
 import Dashboard from "@/pages/Dashboard";
 import NotFound from "@/pages/not-found";
 
@@ -23,12 +24,14 @@ function App() {
     <ThemeProvider defaultTheme="dark" storageKey="loop-ui-theme">
       <QueryClientProvider client={queryClient}>
         <ArtistProvider>
+        <ModeProvider>
         <ChatProvider>
           <TooltipProvider>
             <Toaster />
             <Router />
           </TooltipProvider>
         </ChatProvider>
+        </ModeProvider>
         </ArtistProvider>
       </QueryClientProvider>
     </ThemeProvider>

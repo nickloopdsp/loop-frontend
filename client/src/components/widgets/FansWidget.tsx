@@ -1,3 +1,4 @@
+import React from 'react';
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts';
 import { useState, useEffect, useRef } from 'react';
 import { ChevronDown, ChevronUp, Loader2 } from 'lucide-react';
@@ -61,7 +62,7 @@ export default function FansWidget() {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (selectedArtist && artistStats) {
+    if (selectedArtist) {
       generateDataFromStats();
     }
   }, [selectedArtist, artistStats]);
@@ -86,14 +87,26 @@ export default function FansWidget() {
   const generateDataFromStats = () => {
     setIsLoading(true);
     
-    // Generate data based on artist stats
+    // Only use real artist stats data - no fallbacks to mock data
+    if (!artistStats) {
+      setIsLoading(false);
+      return;
+    }
+    
     const baseValues: Record<Platform, number> = {
-      spotify: artistStats?.spotify?.followers || 45000,
-      instagram: artistStats?.instagram?.followers || 32000,
-      tiktok: artistStats?.tiktok?.followers || 58000,
-      youtube: artistStats?.youtube?.subscribers || 28000,
-      twitter: 15000 // Default value
+      spotify: artistStats?.spotify?.followers || 0,
+      instagram: artistStats?.instagram?.followers || 0,
+      tiktok: artistStats?.tiktok?.followers || 0,
+      youtube: artistStats?.youtube?.subscribers || 0,
+      twitter: 0 // Twitter is not available from API
     };
+
+    // Skip if no real data is available
+    const hasRealData = Object.values(baseValues).some(value => value > 0);
+    if (!hasRealData) {
+      setIsLoading(false);
+      return;
+    }
 
     const platforms: Platform[] = ['spotify', 'instagram', 'tiktok', 'youtube', 'twitter'];
     const newData: Record<Platform, Record<TimePeriod, FansData[]>> = {} as any;

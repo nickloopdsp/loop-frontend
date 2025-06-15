@@ -12,6 +12,7 @@ interface TodoItem {
   time: string;
   date: string;
   type: "regular" | "mc" | "concert" | "scheduled-mc";
+  status?: "todo" | "in-progress" | "done";
   aiExplanation?: string;
   fullStrategy?: string;
   venue?: string;
@@ -26,56 +27,64 @@ const todoData: TodoItem[] = [
     task: "Create post on TikTok",
     time: "08:00 pm - 09:00 pm",
     date: "December 15",
-    type: "regular"
+    type: "regular",
+    status: "in-progress"
   },
   {
     id: 2,
     task: "Post stories on Instagram", 
     time: "09:00 pm - 10:00 pm",
     date: "December 18",
-    type: "regular"
+    type: "regular",
+    status: "todo"
   },
   {
     id: 3,
     task: "Do an Instagram stream",
     time: "07:00 am - 11:00 am", 
     date: "December 22",
-    type: "regular"
+    type: "regular",
+    status: "done"
   },
   {
     id: 4,
     task: "Post short on YouTube",
     time: "10:00 am - 11:00 am",
     date: "January 5", 
-    type: "regular"
+    type: "regular",
+    status: "todo"
   },
   {
     id: 9,
     task: "Upload new song teaser on TikTok",
     time: "02:00 pm - 03:00 pm",
     date: "January 12",
-    type: "regular"
+    type: "regular",
+    status: "in-progress"
   },
   {
     id: 10,
     task: "Respond to fan DMs",
     time: "04:00 pm - 05:00 pm",
     date: "January 20",
-    type: "regular"
+    type: "regular",
+    status: "done"
   },
   {
     id: 11,
     task: "Plan content for next week",
     time: "06:00 pm - 07:00 pm",
     date: "February 3",
-    type: "regular"
+    type: "regular",
+    status: "todo"
   },
   {
     id: 12,
     task: "Review analytics from last post",
     time: "12:00 pm - 01:00 pm",
     date: "February 14",
-    type: "regular"
+    type: "regular",
+    status: "in-progress"
   }
 ];
 
@@ -86,6 +95,7 @@ const mcSuggestedTodos: TodoItem[] = [
     time: "02:00 pm - 03:00 pm",
     date: "September 27",
     type: "mc",
+    status: "todo",
     aiExplanation: "Your recent tracks show strong melodic patterns that align with current trending sounds.",
     fullStrategy: "Based on your music style analysis, I've identified 3 trending sounds that match your melodic structure and could boost your reach by 40%. Let me show you the specific sounds and how to integrate them."
   },
@@ -95,6 +105,7 @@ const mcSuggestedTodos: TodoItem[] = [
     time: "11:00 am - 12:00 pm", 
     date: "September 27",
     type: "mc",
+    status: "in-progress",
     aiExplanation: "You have 47 unresponded comments that could convert to loyal fans with engagement.",
     fullStrategy: "I've analyzed your comment patterns and identified high-value fans waiting for responses. Engaging now could increase your follower retention by 25% and boost algorithm reach."
   },
@@ -375,6 +386,26 @@ export default function ConcertsWidget() {
     }, 200); // 200ms delay before hiding
   };
 
+  const getStatusIndicator = (todo: TodoItem) => {
+    const status = todo.status || "todo"; // Default to "todo" if status is not set
+    
+    const statusColors = {
+      "todo": "#FB923D",      // Orange
+      "in-progress": "#3B82F6", // Blue
+      "done": "#10B981"       // Green
+    };
+
+    return (
+      <div 
+        className="w-2 h-2 rounded-full flex-shrink-0"
+        style={{
+          backgroundColor: statusColors[status],
+          boxShadow: `0 0 6px ${statusColors[status]}40`
+        }}
+      />
+    );
+  };
+
   const getTaskIcon = (todo: TodoItem) => {
     if (todo.type === 'concert') {
       return <Calendar className="w-3.5 h-3.5 flex-shrink-0 text-orange-400" />;
@@ -446,44 +477,82 @@ export default function ConcertsWidget() {
       </div>
 
       {/* Sliding Pill Tabs */}
-      <div className="flex justify-start">
-        <div className="glass-tabs p-1 flex relative w-fit">
-          {/* Sliding background */}
-          <div 
-            className="absolute top-1 bottom-1 bg-white/10 dark:bg-white/10 light:bg-black/10 rounded-full transition-all duration-300 ease-out"
-            style={{
-              left: activeTab === 'todos' ? '4px' : '50%',
-              width: activeTab === 'todos' ? 'calc(50% - 4px)' : 'calc(50% - 4px)',
-            }}
-          />
+      <div className="flex justify-between items-center">
+        <div className="flex gap-3 items-center">
+          <div className="glass-tabs p-1 flex relative w-fit">
+            {/* Sliding background */}
+            <div 
+              className="absolute top-1 bottom-1 bg-white/10 dark:bg-white/10 light:bg-black/10 rounded-full transition-all duration-300 ease-out"
+              style={{
+                left: activeTab === 'todos' ? '4px' : '50%',
+                width: activeTab === 'todos' ? 'calc(50% - 4px)' : 'calc(50% - 4px)',
+              }}
+            />
+            
+            {/* Tab buttons */}
+            <button 
+              onClick={() => setActiveTab('todos')}
+              className={`relative z-10 text-sm px-6 py-2 transition-colors duration-200 ${
+                activeTab === 'todos' ? 'text-foreground font-medium' : 'text-muted-foreground'
+              }`}
+            >
+              To-Do's
+            </button>
+            <button 
+              onClick={() => setActiveTab('mc')}
+              className={`relative z-10 text-sm px-6 py-2 transition-all duration-200 flex items-center gap-2 ${
+                activeTab === 'mc' 
+                  ? 'text-foreground font-medium' 
+                  : 'text-muted-foreground'
+              }`}
+              style={{
+                ...(activeTab === 'mc' && {
+                  color: '#03FF96',
+                  textShadow: '0 0 8px rgba(3, 255, 150, 0.5)',
+                  filter: 'drop-shadow(0 0 4px rgba(3, 255, 150, 0.3))'
+                })
+              }}
+            >
+              <Sparkles className="w-4 h-4" />
+              MC
+            </button>
+          </div>
           
-          {/* Tab buttons */}
-          <button 
-            onClick={() => setActiveTab('todos')}
-            className={`relative z-10 text-sm px-6 py-2 transition-colors duration-200 ${
-              activeTab === 'todos' ? 'text-foreground font-medium' : 'text-muted-foreground'
-            }`}
-          >
-            To-Do's
-          </button>
-          <button 
-            onClick={() => setActiveTab('mc')}
-            className={`relative z-10 text-sm px-6 py-2 transition-all duration-200 flex items-center gap-2 ${
-              activeTab === 'mc' 
-                ? 'text-foreground font-medium' 
-                : 'text-muted-foreground'
-            }`}
-            style={{
-              ...(activeTab === 'mc' && {
-                color: '#03FF96',
-                textShadow: '0 0 8px rgba(3, 255, 150, 0.5)',
-                filter: 'drop-shadow(0 0 4px rgba(3, 255, 150, 0.3))'
-              })
-            }}
-          >
-            <Sparkles className="w-4 h-4" />
-            MC
-          </button>
+          {/* Status Legend - Only show for todos tab */}
+          {activeTab === 'todos' && (
+            <div className="flex items-center gap-3 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">
+              <div className="flex items-center gap-1.5">
+                <div 
+                  className="w-2 h-2 rounded-full"
+                  style={{
+                    backgroundColor: '#FB923D',
+                    boxShadow: '0 0 6px #FB923D40'
+                  }}
+                />
+                <span className="text-xs text-muted-foreground">To Do</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <div 
+                  className="w-2 h-2 rounded-full"
+                  style={{
+                    backgroundColor: '#3B82F6',
+                    boxShadow: '0 0 6px #3B82F640'
+                  }}
+                />
+                <span className="text-xs text-muted-foreground">In Progress</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <div 
+                  className="w-2 h-2 rounded-full"
+                  style={{
+                    backgroundColor: '#10B981',
+                    boxShadow: '0 0 6px #10B98140'
+                  }}
+                />
+                <span className="text-xs text-muted-foreground">Done</span>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -505,29 +574,34 @@ export default function ConcertsWidget() {
                 <div className="text-foreground font-medium text-sm mb-1 line-clamp-2">{todo.task}</div>
                 {getTaskDetails(todo)}
               </div>
-              {/* Show "Add to calendar" button and AI tooltip for MC suggestions only */}
-              {todo.type === 'mc' && (
-                <div className="flex items-center gap-2 flex-shrink-0">
-                  <button 
-                    onClick={(e) => {
-                      e.stopPropagation(); // Prevent triggering todo click
-                      handleAddToCalendar(todo);
-                    }}
-                    className="px-3 py-1.5 text-xs bg-white/10 hover:bg-white/20 text-foreground rounded-full border border-gray-600/50 transition-all duration-200"
-                  >
-                    Add to calendar
-                  </button>
-                  <div 
-                    className="relative"
-                    onMouseEnter={() => handleTooltipMouseEnter(todo.id)}
-                    onMouseLeave={handleTooltipMouseLeave}
-                  >
-                    <div className="w-6 h-6 rounded-full bg-gray-800/50 hover:bg-gray-700/50 border border-gray-600/50 hover:border-gray-500/50 transition-all duration-200 flex items-center justify-center cursor-pointer">
-                      <Sparkles className="w-3.5 h-3.5 text-gray-400" />
+              {/* Status indicator circle */}
+              <div className="flex items-center gap-3 flex-shrink-0">
+                {/* Only show status indicator for todos tab, not for MC suggestions tab */}
+                {activeTab !== 'mc' && getStatusIndicator(todo)}
+                {/* Show "Add to calendar" button and AI tooltip for MC suggestions only */}
+                {todo.type === 'mc' && (
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <button 
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevent triggering todo click
+                        handleAddToCalendar(todo);
+                      }}
+                      className="px-3 py-1.5 text-xs bg-white/10 hover:bg-white/20 text-foreground rounded-full border border-gray-600/50 transition-all duration-200"
+                    >
+                      Add to calendar
+                    </button>
+                    <div 
+                      className="relative"
+                      onMouseEnter={() => handleTooltipMouseEnter(todo.id)}
+                      onMouseLeave={handleTooltipMouseLeave}
+                    >
+                      <div className="w-6 h-6 rounded-full bg-gray-800/50 hover:bg-gray-700/50 border border-gray-600/50 hover:border-gray-500/50 transition-all duration-200 flex items-center justify-center cursor-pointer">
+                        <Sparkles className="w-3.5 h-3.5 text-gray-400" />
+                      </div>
                     </div>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           ))}
         </div>

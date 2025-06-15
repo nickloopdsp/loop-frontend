@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Music, Upload, Loader, CheckCircle, AlertCircle, Download, Play, Pause, FileAudio, Sparkles } from "lucide-react";
+import { Music, Upload, Loader, AlertCircle, Download, Play, Pause, FileAudio, Sparkles, Clock, Key, BarChart3, Zap, Music2 } from "lucide-react";
 
 interface Workflow {
   id: string;
@@ -243,49 +243,58 @@ export default function GenerateChordsWidget() {
   }[jobStatus || ''] || 'Processing...';
 
   return (
-    <div className="h-full flex flex-col bg-gradient-to-br from-indigo-50/50 to-purple-50/50 dark:from-indigo-950/20 dark:to-purple-950/20">
-      {/* Header */}
-      <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+    <div className="h-full w-full flex flex-col bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-900 rounded-2xl overflow-hidden">
+      {/* Modern Header with Glass Effect */}
+      <div className="relative z-10 px-5 py-4 backdrop-blur-xl bg-white/10 border-b border-white/20">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="p-1.5 bg-indigo-100 dark:bg-indigo-900/30 rounded">
-              <Music className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-indigo-400 to-purple-400 rounded-xl blur opacity-75"></div>
+              <div className="relative bg-gradient-to-r from-indigo-500 to-purple-500 p-2.5 rounded-xl">
+                <Music className="h-5 w-5 text-white" />
+              </div>
             </div>
-            <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">Chord Analysis</h3>
+            <div>
+              <h3 className="text-white font-semibold text-lg">Chord Analysis</h3>
+              <p className="text-white/70 text-xs">AI-powered chord detection</p>
+            </div>
           </div>
           {result && (
             <button
               onClick={reset}
-              className="text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              className="px-3 py-1.5 text-xs font-medium text-white/80 hover:text-white bg-white/10 hover:bg-white/20 rounded-xl border border-white/20 transition-all duration-200 backdrop-blur-sm"
             >
-              New Analysis
+              New Song
             </button>
           )}
         </div>
       </div>
 
       {!chordsWorkflow ? (
-        <div className="flex-1 flex items-center justify-center p-4">
+        <div className="flex-1 flex items-center justify-center p-5">
           <div className="text-center">
-            <AlertCircle className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-            <p className="text-sm text-gray-500">Chord analysis not available</p>
+            <AlertCircle className="h-12 w-12 text-white/60 mx-auto mb-4" />
+            <p className="text-white/80 text-lg">Service Unavailable</p>
+            <p className="text-white/60 text-sm">Chord analysis is currently offline</p>
           </div>
         </div>
       ) : (
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 flex flex-col min-h-0">
           {/* Empty State / Upload */}
           {!uploadFile && !processing && !result && (
-            <div className="h-full flex items-center justify-center p-6">
-              <div className="w-full">
-                <div className="text-center mb-6">
-                  <Sparkles className="h-12 w-12 text-indigo-600 dark:text-indigo-400 mx-auto mb-4" />
-                  <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
-                    AI-Powered Chord Detection
-                  </h4>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Upload any song to instantly see its chords
-                  </p>
+            <div className="flex-1 flex items-center justify-center p-5">
+              <div className="w-full max-w-sm mx-auto text-center">
+                <div className="relative mb-6">
+                  <div className="absolute inset-0 bg-gradient-to-r from-indigo-400 to-purple-400 rounded-full blur-xl opacity-50"></div>
+                  <div className="relative bg-gradient-to-r from-indigo-500 to-purple-500 p-5 rounded-full inline-block">
+                    <Sparkles className="h-10 w-10 text-white" />
+                  </div>
                 </div>
+                
+                <h2 className="text-xl font-bold text-white mb-2">Analyze Chords</h2>
+                <p className="text-white/70 mb-6 text-sm leading-relaxed">
+                  Upload any song and instantly see its chord progression in real-time
+                </p>
                 
                 <label className="block">
                   <input
@@ -294,14 +303,17 @@ export default function GenerateChordsWidget() {
                     onChange={handleFileChange}
                     className="hidden"
                   />
-                  <div className="border-2 border-dashed border-indigo-300 dark:border-indigo-700 rounded-lg p-8 hover:border-indigo-400 dark:hover:border-indigo-600 transition-colors cursor-pointer bg-white/50 dark:bg-gray-900/50">
-                    <Upload className="h-12 w-12 text-indigo-400 mx-auto mb-3" />
-                    <p className="text-base font-medium text-gray-700 dark:text-gray-300 text-center">
-                      Drop audio file or click to browse
-                    </p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 text-center mt-2">
-                      MP3, WAV, M4A up to 50MB
-                    </p>
+                  <div className="relative group cursor-pointer">
+                    <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-2xl blur opacity-75 group-hover:opacity-100 transition-opacity"></div>
+                    <div className="relative bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 border-2 border-dashed border-white/30 rounded-2xl p-6 transition-all duration-300 backdrop-blur-sm">
+                      <Upload className="h-8 w-8 text-white mx-auto mb-3" />
+                      <p className="text-white font-semibold mb-1">
+                        Drop your audio file here
+                      </p>
+                      <p className="text-white/80 text-xs">
+                        Supports MP3, WAV, M4A • Max 50MB
+                      </p>
+                    </div>
                   </div>
                 </label>
               </div>
@@ -310,17 +322,19 @@ export default function GenerateChordsWidget() {
 
           {/* File Selected */}
           {uploadFile && !processing && !result && (
-            <div className="h-full flex items-center justify-center p-6">
-              <div className="w-full">
-                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 mb-6">
+            <div className="flex-1 flex items-center justify-center p-5">
+              <div className="w-full max-w-sm mx-auto">
+                <div className="bg-white/10 backdrop-blur-xl rounded-2xl p-5 mb-5 border border-white/20">
                   <div className="flex items-center gap-4">
-                    <FileAudio className="h-12 w-12 text-indigo-600 dark:text-indigo-400" />
+                    <div className="bg-gradient-to-r from-indigo-500 to-purple-500 p-3 rounded-xl">
+                      <FileAudio className="h-6 w-6 text-white" />
+                    </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-base font-medium text-gray-900 dark:text-gray-100 truncate">
+                      <p className="text-white font-semibold truncate">
                         {uploadFile.name}
                       </p>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
-                        {(uploadFile.size / 1024 / 1024).toFixed(1)} MB
+                      <p className="text-white/70 text-sm">
+                        {(uploadFile.size / 1024 / 1024).toFixed(1)} MB • Ready to analyze
                       </p>
                     </div>
                   </div>
@@ -329,14 +343,24 @@ export default function GenerateChordsWidget() {
                 <button
                   onClick={uploadAndProcess}
                   disabled={uploading}
-                  className="w-full bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-medium text-base transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full relative group"
                 >
-                  {uploading ? 'Uploading...' : 'Start Analysis'}
+                  <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-2xl blur opacity-75 group-hover:opacity-100 transition-opacity"></div>
+                  <div className="relative bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white px-6 py-3.5 rounded-2xl font-semibold transition-all duration-300 disabled:opacity-50 backdrop-blur-sm">
+                    {uploading ? (
+                      <div className="flex items-center justify-center gap-3">
+                        <Loader className="h-4 w-4 animate-spin" />
+                        Uploading...
+                      </div>
+                    ) : (
+                      'Start Analysis'
+                    )}
+                  </div>
                 </button>
                 
                 <button
                   onClick={() => setUploadFile(null)}
-                  className="w-full mt-3 text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                  className="w-full mt-3 text-white/70 hover:text-white text-sm transition-colors"
                 >
                   Choose different file
                 </button>
@@ -346,125 +370,170 @@ export default function GenerateChordsWidget() {
 
           {/* Processing State */}
           {(uploading || processing) && (
-            <div className="h-full flex items-center justify-center p-6">
+            <div className="flex-1 flex items-center justify-center p-5">
               <div className="text-center">
                 <div className="relative mb-6">
-                  <div className="h-20 w-20 mx-auto">
-                    <Loader className="h-20 w-20 text-indigo-600 dark:text-indigo-400 animate-spin" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-indigo-400 to-purple-400 rounded-full blur-xl opacity-50 animate-pulse"></div>
+                  <div className="relative bg-gradient-to-r from-indigo-500 to-purple-500 p-5 rounded-full inline-block">
+                    <Loader className="h-10 w-10 text-white animate-spin" />
                   </div>
                 </div>
-                <h4 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
-                  {uploading ? 'Uploading file...' : statusMessage}
-                </h4>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  This usually takes 30-60 seconds
+                <h3 className="text-xl font-bold text-white mb-2">
+                  {uploading ? 'Uploading...' : 'Analyzing Audio'}
+                </h3>
+                <p className="text-white/70 mb-4">{statusMessage}</p>
+                <div className="w-48 h-2 bg-white/20 rounded-full mx-auto overflow-hidden">
+                  <div className="h-full bg-gradient-to-r from-indigo-400 to-purple-400 rounded-full animate-pulse"></div>
+                </div>
+                <p className="text-white/60 text-sm mt-3">
+                  Usually takes 30-60 seconds
                 </p>
               </div>
             </div>
           )}
 
-          {/* Results */}
+          {/* Results - Modern Layout */}
           {result && chordData && (
-            <div className="h-full flex flex-col">
-              {/* Now Playing Bar */}
+            <div className="flex-1 flex flex-col min-h-0">
+              {/* Now Playing Chord - Prominent Display */}
               {originalAudioUrl && getCurrentChord() && (
-                <div className="bg-indigo-600 dark:bg-indigo-700 text-white px-4 py-3">
+                <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <span className="text-sm opacity-75">Now Playing:</span>
-                      <span className="text-xl font-bold">{getCurrentChord()}</span>
+                      <div className="bg-white/20 p-2 rounded-xl backdrop-blur-sm">
+                        <Music2 className="h-4 w-4" />
+                      </div>
+                      <div>
+                        <span className="text-white/80 text-xs">Now Playing</span>
+                        <div className="text-xl font-bold">{getCurrentChord()}</div>
+                      </div>
                     </div>
-                    <span className="text-sm font-mono">
+                    <span className="text-white/90 font-mono">
                       {formatTime(currentTime)}
                     </span>
                   </div>
                 </div>
               )}
 
-              <div className="flex-1 overflow-y-auto p-4 space-y-4">
+              <div className="flex-1 overflow-y-auto p-4 space-y-3">
                 {/* Audio Player */}
                 {originalAudioUrl && (
-                  <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm">
+                  <div className="bg-white/10 backdrop-blur-xl rounded-2xl p-5 border border-white/20">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="bg-gradient-to-r from-indigo-500 to-purple-500 p-2.5 rounded-xl">
+                        <Play className="h-5 w-5 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="text-white font-semibold">Audio Player</h3>
+                        <p className="text-white/70 text-sm">Follow along with chord changes</p>
+                      </div>
+                    </div>
                     <audio
                       ref={audioRef}
                       src={originalAudioUrl}
                       onTimeUpdate={handleTimeUpdate}
                       onEnded={() => setIsPlaying(false)}
-                      className="w-full h-12"
+                      className="w-full rounded-xl"
                       controls
+                      style={{
+                        background: 'rgba(255,255,255,0.1)',
+                        borderRadius: '12px',
+                        backdropFilter: 'blur(10px)'
+                      }}
                     />
                   </div>
                 )}
 
-                {/* Song Info */}
+                {/* Song Info Cards */}
                 {(chordData.key || chordData.bpm || result["root key"] || result["BPM"]) && (
-                  <div className="bg-white dark:bg-gray-800 rounded-lg p-5 shadow-sm">
-                    <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">
-                      Song Information
-                    </h4>
-                    <div className="grid grid-cols-2 gap-4">
-                      {(chordData.key || result["root key"]) && (
-                        <div>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">Key</p>
-                          <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                            {chordData.key || result["root key"]} {chordData.scale}
-                          </p>
+                  <div className="grid grid-cols-2 gap-3">
+                    {(chordData.key || result["root key"]) && (
+                      <div className="bg-white/10 backdrop-blur-xl rounded-2xl p-4 border border-white/20">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="bg-gradient-to-r from-emerald-400 to-cyan-400 p-1.5 rounded-lg">
+                            <Key className="h-4 w-4 text-white" />
+                          </div>
+                          <span className="text-white/80 text-xs font-medium">Musical Key</span>
                         </div>
-                      )}
-                      {(chordData.bpm || result["BPM"]) && (
-                        <div>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">Tempo</p>
-                          <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                            {chordData.bpm ? Math.round(chordData.bpm) : result["BPM"]} BPM
-                          </p>
+                        <p className="text-white font-bold text-lg">
+                          {chordData.key || result["root key"]} {chordData.scale}
+                        </p>
+                      </div>
+                    )}
+                    {(chordData.bpm || result["BPM"]) && (
+                      <div className="bg-white/10 backdrop-blur-xl rounded-2xl p-4 border border-white/20">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="bg-gradient-to-r from-orange-400 to-red-400 p-1.5 rounded-lg">
+                            <BarChart3 className="h-4 w-4 text-white" />
+                          </div>
+                          <span className="text-white/80 text-xs font-medium">Tempo</span>
                         </div>
-                      )}
-                    </div>
+                        <p className="text-white font-bold text-lg">
+                          {chordData.bpm ? Math.round(chordData.bpm) : result["BPM"]} BPM
+                        </p>
+                      </div>
+                    )}
                   </div>
                 )}
 
                 {/* Chord Progression */}
                 {chordData.chords && chordData.chords.length > 0 && (
-                  <div className="bg-white dark:bg-gray-800 rounded-lg p-5 shadow-sm">
-                    <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4">
-                      Full Chord Progression
-                    </h4>
-                    <div className="space-y-2 max-h-60 overflow-y-auto">
-                      {chordData.chords.map((item, idx) => {
+                  <div className="bg-white/10 backdrop-blur-xl rounded-2xl p-5 border border-white/20">
+                    <div className="flex items-center gap-2 mb-4">
+                      <div className="bg-gradient-to-r from-blue-400 to-indigo-400 p-1.5 rounded-lg">
+                        <Clock className="h-4 w-4 text-white" />
+                      </div>
+                      <h4 className="text-white font-semibold">Chord Progression</h4>
+                    </div>
+                    <div className="space-y-2 max-h-40 overflow-y-auto">
+                      {chordData.chords.slice(0, 12).map((item, idx) => {
                         const isActive = currentTime >= item.time && 
                           (idx === chordData.chords!.length - 1 || currentTime < chordData.chords![idx + 1].time);
                         
                         return (
                           <div
                             key={idx}
-                            className={`flex items-center gap-4 py-2 px-3 rounded transition-colors ${
+                            className={`flex items-center gap-3 py-2.5 px-3 rounded-xl transition-all duration-300 ${
                               isActive 
-                                ? 'bg-indigo-100 dark:bg-indigo-900/30' 
-                                : 'hover:bg-gray-50 dark:hover:bg-gray-700/50'
+                                ? 'bg-gradient-to-r from-indigo-500/30 to-purple-500/30 border border-indigo-400/50 backdrop-blur-sm' 
+                                : 'bg-white/5 hover:bg-white/10 backdrop-blur-sm'
                             }`}
                           >
-                            <span className="text-sm text-gray-500 dark:text-gray-400 w-14 font-mono">
+                            <span className="text-white/70 text-xs font-mono w-10">
                               {formatTime(item.time)}
                             </span>
-                            <span className={`text-base font-semibold ${
+                            <span className={`font-bold ${
                               isActive 
-                                ? 'text-indigo-600 dark:text-indigo-400' 
-                                : 'text-gray-900 dark:text-gray-100'
+                                ? 'text-white' 
+                                : 'text-white/90'
                             }`}>
                               {item.chord}
                             </span>
+                            {isActive && (
+                              <div className="ml-auto">
+                                <div className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-pulse"></div>
+                              </div>
+                            )}
                           </div>
                         );
                       })}
+                      {chordData.chords.length > 12 && (
+                        <div className="text-white/60 text-xs text-center py-2">
+                          +{chordData.chords.length - 12} more chords...
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}
 
                 {/* Export Options */}
-                <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-4">
-                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                    Export Data
-                  </p>
+                <div className="bg-white/10 backdrop-blur-xl rounded-2xl p-5 border border-white/20">
+                  <div className="flex items-center gap-2 mb-4">
+                    <div className="bg-gradient-to-r from-green-400 to-emerald-400 p-1.5 rounded-lg">
+                      <Download className="h-4 w-4 text-white" />
+                    </div>
+                    <h4 className="text-white font-semibold">Export Data</h4>
+                  </div>
                   <div className="grid grid-cols-2 gap-2">
                     {Object.entries(result)
                       .filter(([key]) => !["root key", "BPM"].includes(key))
@@ -474,10 +543,12 @@ export default function GenerateChordsWidget() {
                           href={url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 text-sm bg-white dark:bg-gray-700 px-3 py-2 rounded border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
+                          className="flex items-center gap-2 p-2.5 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 hover:border-white/20 transition-all duration-300 group backdrop-blur-sm"
                         >
-                          <Download className="h-4 w-4" />
-                          {key.replace(/_/g, ' ')}
+                          <Download className="h-3 w-3 text-white/70 group-hover:text-white transition-colors" />
+                          <span className="text-white/90 font-medium text-xs truncate">
+                            {key.replace(/_/g, ' ')}
+                          </span>
                         </a>
                       ))}
                   </div>
@@ -488,20 +559,25 @@ export default function GenerateChordsWidget() {
 
           {/* Error State */}
           {error && (
-            <div className="h-full flex items-center justify-center p-6">
-              <div className="text-center w-full">
-                <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-                <h4 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
+            <div className="flex-1 flex items-center justify-center p-5">
+              <div className="text-center max-w-sm">
+                <div className="bg-red-500/20 p-5 rounded-full inline-block mb-5 backdrop-blur-sm">
+                  <AlertCircle className="h-10 w-10 text-red-400" />
+                </div>
+                <h3 className="text-xl font-bold text-white mb-2">
                   Analysis Failed
-                </h4>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+                </h3>
+                <p className="text-white/70 mb-5 text-sm">
                   {error}
                 </p>
                 <button
                   onClick={reset}
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg font-medium transition-colors"
+                  className="relative group"
                 >
-                  Try again
+                  <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-2xl blur opacity-75 group-hover:opacity-100 transition-opacity"></div>
+                  <div className="relative bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white px-6 py-3 rounded-2xl font-semibold transition-all duration-300 backdrop-blur-sm">
+                    Try Again
+                  </div>
                 </button>
               </div>
             </div>

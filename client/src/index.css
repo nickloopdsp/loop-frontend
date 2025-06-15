@@ -533,6 +533,11 @@
     background-color: transparent !important;
   }
   
+  /* Remove list bullets from sidebar menus */
+  [data-sidebar="menu"] {
+    list-style: none !important;
+  }
+  
   /* Force all sidebar elements to be transparent */
   .group[data-variant="sidebar"] > div > div[data-sidebar="sidebar"] {
     background: transparent !important;
@@ -824,5 +829,19 @@
   #dashboard-grid {
     width: 100% !important;
     max-width: 100% !important;
+  }
+
+  /* Add widget placeholder specific styles */
+  .add-widget-placeholder {
+    background: rgba(3, 255, 150, 0.02);
+    border: 2px dashed rgba(3, 255, 150, 0.3);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+  }
+
+  .add-widget-placeholder:hover {
+    background: rgba(3, 255, 150, 0.05);
+    border-color: rgba(3, 255, 150, 0.6);
+    transform: translateY(-2px);
   }
 }

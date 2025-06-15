@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Mic, Upload, Loader, CheckCircle, AlertCircle, Music2, Download, Play, Pause, FileAudio, Layers } from "lucide-react";
+import { Mic, Upload, Loader, AlertCircle, Music2, Download, Play, Pause, FileAudio, Layers, Volume2, Zap } from "lucide-react";
 
 interface Workflow {
   id: string;
@@ -23,31 +23,36 @@ interface AudioPlayerState {
   [key: string]: boolean;
 }
 
-const stemInfo: Record<string, { icon: React.ReactNode; color: string; label: string }> = {
+const stemInfo: Record<string, { icon: React.ReactNode; color: string; label: string; gradient: string }> = {
   vocals: { 
     icon: <Mic className="h-4 w-4" />, 
     color: 'purple',
-    label: 'Vocals' 
+    label: 'Vocals',
+    gradient: 'from-purple-500 to-pink-500'
   },
   bass: { 
     icon: <Music2 className="h-4 w-4" />, 
     color: 'blue',
-    label: 'Bass' 
+    label: 'Bass',
+    gradient: 'from-blue-500 to-cyan-500'
   },
   drums: { 
     icon: <Music2 className="h-4 w-4" />, 
     color: 'green',
-    label: 'Drums' 
+    label: 'Drums',
+    gradient: 'from-green-500 to-emerald-500'
   },
   guitars: { 
     icon: <Music2 className="h-4 w-4" />, 
     color: 'orange',
-    label: 'Guitars' 
+    label: 'Guitars',
+    gradient: 'from-orange-500 to-yellow-500'
   },
   other: { 
     icon: <Music2 className="h-4 w-4" />, 
     color: 'gray',
-    label: 'Other' 
+    label: 'Other',
+    gradient: 'from-gray-500 to-slate-500'
   },
 };
 
@@ -238,61 +243,59 @@ export default function StemSeparationWidget() {
     'STARTED': 'Separating stems...',
   }[jobStatus || ''] || 'Processing...';
 
-  const getStemColor = (key: string) => {
-    const colors: Record<string, string> = {
-      purple: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
-      blue: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
-      green: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
-      orange: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400',
-      gray: 'bg-gray-100 text-gray-700 dark:bg-gray-800/30 dark:text-gray-400',
-    };
-    return colors[stemInfo[key.toLowerCase()]?.color || 'gray'];
-  };
-
   return (
-    <div className="h-full flex flex-col bg-gradient-to-br from-purple-50/50 to-pink-50/50 dark:from-purple-950/20 dark:to-pink-950/20">
-      {/* Header */}
-      <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+    <div className="h-full w-full flex flex-col bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 rounded-2xl overflow-hidden">
+      {/* Modern Header with Glass Effect */}
+      <div className="relative z-10 px-5 py-4 backdrop-blur-xl bg-white/10 border-b border-white/20">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="p-1.5 bg-purple-100 dark:bg-purple-900/30 rounded">
-              <Mic className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-pink-400 rounded-xl blur opacity-75"></div>
+              <div className="relative bg-gradient-to-r from-purple-500 to-pink-500 p-2.5 rounded-xl">
+                <Layers className="h-5 w-5 text-white" />
+              </div>
             </div>
-            <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">Stem Separation</h3>
+            <div>
+              <h3 className="text-white font-semibold text-lg">Stem Separation</h3>
+              <p className="text-white/70 text-xs">AI-powered audio splitting</p>
+            </div>
           </div>
           {result && (
             <button
               onClick={reset}
-              className="text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              className="px-3 py-1.5 text-xs font-medium text-white/80 hover:text-white bg-white/10 hover:bg-white/20 rounded-xl border border-white/20 transition-all duration-200 backdrop-blur-sm"
             >
-              New Separation
+              New Track
             </button>
           )}
         </div>
       </div>
 
       {!stemWorkflow ? (
-        <div className="flex-1 flex items-center justify-center p-4">
+        <div className="flex-1 flex items-center justify-center p-5">
           <div className="text-center">
-            <AlertCircle className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-            <p className="text-sm text-gray-500">Stem separation not available</p>
+            <AlertCircle className="h-12 w-12 text-white/60 mx-auto mb-4" />
+            <p className="text-white/80 text-lg">Service Unavailable</p>
+            <p className="text-white/60 text-sm">Stem separation is currently offline</p>
           </div>
         </div>
       ) : (
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 flex flex-col min-h-0">
           {/* Empty State / Upload */}
           {!uploadFile && !processing && !result && (
-            <div className="h-full flex items-center justify-center p-6">
-              <div className="w-full">
-                <div className="text-center mb-6">
-                  <Layers className="h-12 w-12 text-purple-600 dark:text-purple-400 mx-auto mb-4" />
-                  <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
-                    AI-Powered Stem Separation
-                  </h4>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Split any song into individual instruments
-                  </p>
+            <div className="flex-1 flex items-center justify-center p-5">
+              <div className="w-full max-w-sm mx-auto text-center">
+                <div className="relative mb-6">
+                  <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full blur-xl opacity-50"></div>
+                  <div className="relative bg-gradient-to-r from-purple-500 to-pink-500 p-5 rounded-full inline-block">
+                    <Zap className="h-10 w-10 text-white" />
+                  </div>
                 </div>
+                
+                <h2 className="text-xl font-bold text-white mb-2">Split Any Track</h2>
+                <p className="text-white/70 mb-6 text-sm leading-relaxed">
+                  Upload your audio and watch AI separate vocals, instruments, and more
+                </p>
                 
                 <label className="block">
                   <input
@@ -301,14 +304,17 @@ export default function StemSeparationWidget() {
                     onChange={handleFileChange}
                     className="hidden"
                   />
-                  <div className="border-2 border-dashed border-purple-300 dark:border-purple-700 rounded-lg p-8 hover:border-purple-400 dark:hover:border-purple-600 transition-colors cursor-pointer bg-white/50 dark:bg-gray-900/50">
-                    <Upload className="h-12 w-12 text-purple-400 mx-auto mb-3" />
-                    <p className="text-base font-medium text-gray-700 dark:text-gray-300 text-center">
-                      Drop audio file or click to browse
-                    </p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 text-center mt-2">
-                      MP3, WAV, M4A up to 50MB
-                    </p>
+                  <div className="relative group cursor-pointer">
+                    <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl blur opacity-75 group-hover:opacity-100 transition-opacity"></div>
+                    <div className="relative bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 border-2 border-dashed border-white/30 rounded-2xl p-6 transition-all duration-300 backdrop-blur-sm">
+                      <Upload className="h-8 w-8 text-white mx-auto mb-3" />
+                      <p className="text-white font-semibold mb-1">
+                        Drop your audio file here
+                      </p>
+                      <p className="text-white/80 text-xs">
+                        Supports MP3, WAV, M4A • Max 50MB
+                      </p>
+                    </div>
                   </div>
                 </label>
               </div>
@@ -317,17 +323,19 @@ export default function StemSeparationWidget() {
 
           {/* File Selected */}
           {uploadFile && !processing && !result && (
-            <div className="h-full flex items-center justify-center p-6">
-              <div className="w-full">
-                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 mb-6">
+            <div className="flex-1 flex items-center justify-center p-5">
+              <div className="w-full max-w-sm mx-auto">
+                <div className="bg-white/10 backdrop-blur-xl rounded-2xl p-5 mb-5 border border-white/20">
                   <div className="flex items-center gap-4">
-                    <FileAudio className="h-12 w-12 text-purple-600 dark:text-purple-400" />
+                    <div className="bg-gradient-to-r from-purple-500 to-pink-500 p-3 rounded-xl">
+                      <FileAudio className="h-6 w-6 text-white" />
+                    </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-base font-medium text-gray-900 dark:text-gray-100 truncate">
+                      <p className="text-white font-semibold truncate">
                         {uploadFile.name}
                       </p>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
-                        {(uploadFile.size / 1024 / 1024).toFixed(1)} MB
+                      <p className="text-white/70 text-sm">
+                        {(uploadFile.size / 1024 / 1024).toFixed(1)} MB • Ready to process
                       </p>
                     </div>
                   </div>
@@ -336,14 +344,24 @@ export default function StemSeparationWidget() {
                 <button
                   onClick={uploadAndProcess}
                   disabled={uploading}
-                  className="w-full bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-medium text-base transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full relative group"
                 >
-                  {uploading ? 'Uploading...' : 'Separate Stems'}
+                  <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl blur opacity-75 group-hover:opacity-100 transition-opacity"></div>
+                  <div className="relative bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white px-6 py-3.5 rounded-2xl font-semibold transition-all duration-300 disabled:opacity-50 backdrop-blur-sm">
+                    {uploading ? (
+                      <div className="flex items-center justify-center gap-3">
+                        <Loader className="h-4 w-4 animate-spin" />
+                        Uploading...
+                      </div>
+                    ) : (
+                      'Start Separation'
+                    )}
+                  </div>
                 </button>
                 
                 <button
                   onClick={() => setUploadFile(null)}
-                  className="w-full mt-3 text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                  className="w-full mt-3 text-white/70 hover:text-white text-sm transition-colors"
                 >
                   Choose different file
                 </button>
@@ -353,28 +371,33 @@ export default function StemSeparationWidget() {
 
           {/* Processing State */}
           {(uploading || processing) && (
-            <div className="h-full flex items-center justify-center p-6">
+            <div className="flex-1 flex items-center justify-center p-5">
               <div className="text-center">
                 <div className="relative mb-6">
-                  <div className="h-20 w-20 mx-auto">
-                    <Loader className="h-20 w-20 text-purple-600 dark:text-purple-400 animate-spin" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full blur-xl opacity-50 animate-pulse"></div>
+                  <div className="relative bg-gradient-to-r from-purple-500 to-pink-500 p-5 rounded-full inline-block">
+                    <Loader className="h-10 w-10 text-white animate-spin" />
                   </div>
                 </div>
-                <h4 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
-                  {uploading ? 'Uploading file...' : statusMessage}
-                </h4>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  This usually takes 2-3 minutes
+                <h3 className="text-xl font-bold text-white mb-2">
+                  {uploading ? 'Uploading...' : 'Processing Audio'}
+                </h3>
+                <p className="text-white/70 mb-4">{statusMessage}</p>
+                <div className="w-48 h-2 bg-white/20 rounded-full mx-auto overflow-hidden">
+                  <div className="h-full bg-gradient-to-r from-purple-400 to-pink-400 rounded-full animate-pulse"></div>
+                </div>
+                <p className="text-white/60 text-sm mt-3">
+                  Usually takes 2-3 minutes
                 </p>
               </div>
             </div>
           )}
 
-          {/* Results */}
+          {/* Results - Modern Layout */}
           {result && (
-            <div className="h-full flex flex-col">
+            <div className="flex-1 flex flex-col min-h-0">
               {/* Stem Tabs */}
-              <div className="px-4 py-3 bg-gray-50 dark:bg-gray-800/50 border-b border-gray-200 dark:border-gray-700">
+              <div className="px-4 py-3 bg-white/5 backdrop-blur-sm border-b border-white/10">
                 <div className="flex gap-2 overflow-x-auto">
                   {Object.entries(result)
                     .filter(([key]) => isAudioFile(key))
@@ -386,14 +409,19 @@ export default function StemSeparationWidget() {
                         <button
                           key={key}
                           onClick={() => setActiveTab(key)}
-                          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
+                          className={`relative flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all duration-300 whitespace-nowrap backdrop-blur-sm ${
                             isActive
-                              ? getStemColor(key)
-                              : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
+                              ? 'text-white'
+                              : 'text-white/70 hover:text-white hover:bg-white/10'
                           }`}
                         >
-                          {info.icon}
-                          {info.label}
+                          {isActive && (
+                            <div className={`absolute inset-0 bg-gradient-to-r ${info.gradient} rounded-xl opacity-90`}></div>
+                          )}
+                          <div className="relative flex items-center gap-2">
+                            {info.icon}
+                            {info.label}
+                          </div>
                         </button>
                       );
                     })}
@@ -401,76 +429,85 @@ export default function StemSeparationWidget() {
               </div>
 
               {/* Active Stem Player */}
-              <div className="flex-1 overflow-y-auto p-4">
+              <div className="flex-1 overflow-y-auto p-4 space-y-3">
                 {activeTab && result[activeTab] && (
-                  <div className="space-y-4">
+                  <>
                     {/* Player Card */}
-                    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden">
-                      <div className={`p-5 ${getStemColor(activeTab)}`}>
-                        <div className="flex items-center justify-between mb-3">
-                          <div className="flex items-center gap-3">
+                    <div className="bg-white/10 backdrop-blur-xl rounded-2xl p-5 border border-white/20">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-3">
+                          <div className={`bg-gradient-to-r ${stemInfo[activeTab.toLowerCase()]?.gradient || stemInfo.other.gradient} p-2.5 rounded-xl`}>
                             {stemInfo[activeTab.toLowerCase()]?.icon || stemInfo.other.icon}
-                            <h4 className="text-lg font-semibold">
-                              {stemInfo[activeTab.toLowerCase()]?.label || activeTab}
-                            </h4>
                           </div>
-                          <button
-                            onClick={() => togglePlayPause(activeTab)}
-                            className="p-3 bg-white/20 dark:bg-black/20 rounded-full hover:bg-white/30 dark:hover:bg-black/30 transition-colors"
-                          >
-                            {playingStates[activeTab] ? 
-                              <Pause className="h-5 w-5" /> : 
-                              <Play className="h-5 w-5" />
-                            }
-                          </button>
+                          <div>
+                            <h3 className="text-white font-semibold">
+                              {stemInfo[activeTab.toLowerCase()]?.label || activeTab}
+                            </h3>
+                            <p className="text-white/70 text-sm">Isolated track ready</p>
+                          </div>
                         </div>
+                        <button
+                          onClick={() => togglePlayPause(activeTab)}
+                          className="relative group"
+                        >
+                          <div className="absolute inset-0 bg-white/20 rounded-xl blur group-hover:bg-white/30 transition-colors"></div>
+                          <div className="relative bg-white/10 hover:bg-white/20 p-3 rounded-xl transition-colors backdrop-blur-sm">
+                            {playingStates[activeTab] ? 
+                              <Pause className="h-5 w-5 text-white" /> : 
+                              <Play className="h-5 w-5 text-white" />
+                            }
+                          </div>
+                        </button>
                       </div>
-                      <div className="p-5">
-                        <audio
-                          ref={el => {
-                            if (el) audioRefs.current[activeTab] = el;
-                          }}
-                          src={result[activeTab]}
-                          onEnded={() => setPlayingStates(prev => ({ ...prev, [activeTab]: false }))}
-                          className="w-full h-12"
-                          controls
-                        />
-                      </div>
+                      
+                      <audio
+                        ref={el => {
+                          if (el) audioRefs.current[activeTab] = el;
+                        }}
+                        src={result[activeTab]}
+                        onEnded={() => setPlayingStates(prev => ({ ...prev, [activeTab]: false }))}
+                        className="w-full rounded-xl"
+                        controls
+                        style={{
+                          background: 'rgba(255,255,255,0.1)',
+                          borderRadius: '12px',
+                          backdropFilter: 'blur(10px)'
+                        }}
+                      />
                     </div>
 
-                    {/* Download All */}
-                    <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-5">
-                      <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-4">
+                    {/* Download Grid */}
+                    <div className="bg-white/10 backdrop-blur-xl rounded-2xl p-5 border border-white/20">
+                      <h4 className="text-white font-semibold mb-4 flex items-center gap-2">
+                        <Download className="h-4 w-4" />
                         Download Stems
                       </h4>
-                      <div className="grid grid-cols-1 gap-3">
+                      <div className="grid grid-cols-1 gap-2">
                         {Object.entries(result)
                           .filter(([key]) => isAudioFile(key))
-                          .map(([key, url]) => (
-                            <a
-                              key={key}
-                              href={url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="flex items-center gap-3 p-3 bg-white dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
-                            >
-                              {stemInfo[key.toLowerCase()]?.icon || stemInfo.other.icon}
-                              <span className="text-sm font-medium flex-1">
-                                {stemInfo[key.toLowerCase()]?.label || key}
-                              </span>
-                              <Download className="h-4 w-4 text-gray-400" />
-                            </a>
-                          ))}
+                          .map(([key, url]) => {
+                            const info = stemInfo[key.toLowerCase()] || stemInfo.other;
+                            return (
+                              <a
+                                key={key}
+                                href={url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-3 p-3 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 hover:border-white/20 transition-all duration-300 group backdrop-blur-sm"
+                              >
+                                <div className={`bg-gradient-to-r ${info.gradient} p-2 rounded-lg`}>
+                                  {info.icon}
+                                </div>
+                                <span className="text-white font-medium flex-1">
+                                  {info.label}
+                                </span>
+                                <Download className="h-4 w-4 text-white/70 group-hover:text-white transition-colors" />
+                              </a>
+                            );
+                          })}
                       </div>
                     </div>
-
-                    {/* Quick Tips */}
-                    <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
-                      <p className="text-sm text-blue-700 dark:text-blue-300">
-                        <strong>Tip:</strong> Use these stems for remixing, karaoke, or practice!
-                      </p>
-                    </div>
-                  </div>
+                  </>
                 )}
               </div>
             </div>
@@ -478,20 +515,25 @@ export default function StemSeparationWidget() {
 
           {/* Error State */}
           {error && (
-            <div className="h-full flex items-center justify-center p-6">
-              <div className="text-center w-full">
-                <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-                <h4 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
-                  Separation Failed
-                </h4>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+            <div className="flex-1 flex items-center justify-center p-5">
+              <div className="text-center max-w-sm">
+                <div className="bg-red-500/20 p-5 rounded-full inline-block mb-5 backdrop-blur-sm">
+                  <AlertCircle className="h-10 w-10 text-red-400" />
+                </div>
+                <h3 className="text-xl font-bold text-white mb-2">
+                  Processing Failed
+                </h3>
+                <p className="text-white/70 mb-5 text-sm">
                   {error}
                 </p>
                 <button
                   onClick={reset}
-                  className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg font-medium transition-colors"
+                  className="relative group"
                 >
-                  Try again
+                  <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl blur opacity-75 group-hover:opacity-100 transition-opacity"></div>
+                  <div className="relative bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white px-6 py-3 rounded-2xl font-semibold transition-all duration-300 backdrop-blur-sm">
+                    Try Again
+                  </div>
                 </button>
               </div>
             </div>

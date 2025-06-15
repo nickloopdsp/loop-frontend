@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Sidebar,
   SidebarContent,
@@ -12,6 +13,9 @@ import {
 } from "@/components/ui/sidebar";
 import { mockArtistProfile } from "@/lib/mockData";
 import { useEffect } from "react";
+import WidgetSelector from "./WidgetSelector";
+import CleanupButton from "./CleanupButton";
+import { Plus, RotateCcw } from "lucide-react";
 
 // Custom Icons based on the provided PNG designs
 const LoopIcon = ({ className }: { className?: string }) => (
@@ -61,7 +65,16 @@ const navigationItems = [
   { icon: MCIcon, label: "MC", active: false },
 ];
 
-export default function AppSidebar() {
+interface AppSidebarProps {
+  onAddWidget?: (widgetType: string) => void;
+  existingWidgets?: string[];
+  onCleanupDuplicates?: () => void;
+  onResetMode?: () => void;
+  currentMode?: string;
+  hasCustomLayout?: boolean;
+}
+
+export default function AppSidebar({ onAddWidget, existingWidgets = [], onCleanupDuplicates, onResetMode, currentMode, hasCustomLayout }: AppSidebarProps) {
   const { state } = useSidebar();
   const isCollapsed = state === "collapsed";
   
@@ -131,6 +144,82 @@ export default function AppSidebar() {
             </SidebarMenuItem>
           ))}
         </SidebarMenu>
+        
+        {/* Add Widget Section */}
+        <div className="mt-6 pt-6 border-t border-[#03FF96]/20">
+          <SidebarMenuItem>
+            <WidgetSelector
+              onWidgetSelect={(widgetType) => {
+                if (onAddWidget) {
+                  onAddWidget(widgetType);
+                }
+              }}
+              existingWidgets={existingWidgets}
+            >
+              <SidebarMenuButton
+                size="lg"
+                className={`w-full justify-start gap-4 px-4 py-3 rounded-xl transition-all duration-200 text-base font-medium
+                           bg-gradient-to-r from-[#03FF96]/10 to-emerald-400/10 
+                           border border-[#03FF96]/20 
+                           text-[#03FF96] hover:text-emerald-300
+                           hover:bg-gradient-to-r hover:from-[#03FF96]/20 hover:to-emerald-400/20
+                           hover:border-[#03FF96]/30
+                           hover:shadow-lg hover:shadow-[#03FF96]/10
+                           active:scale-[0.98] active:shadow-inner
+                           backdrop-blur-sm
+                           relative overflow-hidden
+                           before:absolute before:inset-0 before:bg-gradient-to-r 
+                           before:from-transparent before:via-white/20 before:to-transparent
+                           before:translate-x-[-100%] before:skew-x-12
+                           hover:before:translate-x-[100%] before:transition-transform before:duration-700 before:ease-out ${
+                  isCollapsed ? 'justify-center' : ''
+                }`}
+              >
+                <div className="flex items-center gap-4">
+                  <div className="p-1.5 rounded-lg bg-[#03FF96]/20 border border-[#03FF96]/30 flex-shrink-0">
+                    <Plus className="h-4 w-4 text-[#03FF96]" />
+                  </div>
+                  {!isCollapsed && <span className="text-base">Add Widget</span>}
+                </div>
+              </SidebarMenuButton>
+            </WidgetSelector>
+          </SidebarMenuItem>
+          
+          {/* Cleanup Button - only show if there are duplicates */}
+          {onCleanupDuplicates && existingWidgets.length > new Set(existingWidgets).size && (
+            <SidebarMenuItem className="mt-2">
+              <CleanupButton onCleanup={onCleanupDuplicates} />
+            </SidebarMenuItem>
+          )}
+          
+          {/* Reset Mode Button - show when user has customized the layout */}
+          {onResetMode && currentMode && hasCustomLayout && (
+            <SidebarMenuItem className="mt-2">
+              <SidebarMenuButton
+                onClick={onResetMode}
+                size="lg"
+                className={`w-full justify-start gap-4 px-4 py-3 rounded-xl transition-all duration-200 text-base
+                           bg-gradient-to-r from-red-500/10 to-orange-500/10 
+                           border border-red-500/20 
+                           text-red-400 hover:text-red-300
+                           hover:bg-gradient-to-r hover:from-red-500/20 hover:to-orange-500/20
+                           hover:border-red-500/30
+                           hover:shadow-lg hover:shadow-red-500/10
+                           active:scale-[0.98] active:shadow-inner
+                           backdrop-blur-sm font-medium ${
+                  isCollapsed ? 'justify-center' : ''
+                }`}
+              >
+                <div className="flex items-center gap-4">
+                  <div className="p-1.5 rounded-lg bg-red-500/20 border border-red-500/30 flex-shrink-0">
+                    <RotateCcw className="h-4 w-4 text-red-400" />
+                  </div>
+                  {!isCollapsed && <span className="text-base">Reset {currentMode.charAt(0).toUpperCase() + currentMode.slice(1)}</span>}
+                </div>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          )}
+        </div>
       </SidebarContent>
 
       <SidebarFooter className="p-6">

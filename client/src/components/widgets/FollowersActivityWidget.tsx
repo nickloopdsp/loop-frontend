@@ -1,3 +1,4 @@
+import React from 'react';
 import { LineChart, Line, ResponsiveContainer } from 'recharts';
 import { useState, useEffect } from 'react';
 import { Sparkles, MoreHorizontal, Music, Play, Apple, Loader2 } from 'lucide-react';
@@ -275,136 +276,146 @@ export default function FollowersActivityWidget() {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (selectedArtist && artistStats) {
+    if (selectedArtist) {
       generateActivityData();
+    } else {
+      // Reset to mock data when no artist is selected
+      setActivityData(mockActivityData);
     }
   }, [selectedArtist, artistStats]);
 
   const generateActivityData = () => {
-    if (!artistStats) return;
-    
     setIsLoading(true);
     
-    // Generate data based on real artist stats
-    const newData: Record<TimePeriod, PlatformActivity[]> = {
+    // Generate data based on real artist stats, with no fallbacks to mock data
+    if (!artistStats) {
+      setActivityData(mockActivityData);
+      setIsLoading(false);
+      return;
+    }
+
+    const baseData: Record<Platform, number> = {
+      instagram: artistStats?.instagram?.followers || 0,
+      tiktok: artistStats?.tiktok?.followers || 0,
+      spotify: artistStats?.spotify?.followers || 0,
+      youtube: artistStats?.youtube?.subscribers || 0,
+      apple: 0, // Not available from API
+    };
+
+    // Create new activity data structure
+    const newActivityData: Record<TimePeriod, PlatformActivity[]> = {
       day: [],
       week: [],
       month: []
     };
 
     // Instagram data
-    if (artistStats.instagram) {
-      const instagramFollowers = artistStats.instagram.followers || 0;
-      const formattedFollowers = formatFollowers(instagramFollowers);
-      
-      ['day', 'week', 'month'].forEach((period) => {
-        const multiplier = period === 'day' ? 0.001 : period === 'week' ? 0.005 : 0.02;
-        const change = Math.round(instagramFollowers * multiplier * (0.8 + Math.random() * 0.4));
-        const trend = change > 0 ? 'up' : change < 0 ? 'down' : 'neutral';
-        
-        newData[period as TimePeriod].push({
-          platform: 'instagram',
-          label: 'Instagram',
-          followers: formattedFollowers,
-          change: change,
-          changeFormatted: formatChange(change),
-          trend: trend as 'up' | 'down' | 'neutral',
-          data: generateChartData(trend),
-          icon: <InstagramIcon />
-        });
-      });
-    }
-
-    // TikTok data
-    if (artistStats.tiktok) {
-      const tiktokFollowers = artistStats.tiktok.followers || 0;
-      const formattedFollowers = formatFollowers(tiktokFollowers);
-      
-      ['day', 'week', 'month'].forEach((period) => {
-        const multiplier = period === 'day' ? 0.002 : period === 'week' ? 0.01 : 0.04;
-        const change = Math.round(tiktokFollowers * multiplier * (0.8 + Math.random() * 0.4));
-        const trend = change > 0 ? 'up' : change < 0 ? 'down' : 'neutral';
-        
-        newData[period as TimePeriod].push({
-          platform: 'tiktok',
-          label: 'Tik-Tok',
-          followers: formattedFollowers,
-          change: change,
-          changeFormatted: formatChange(change),
-          trend: trend as 'up' | 'down' | 'neutral',
-          data: generateChartData(trend),
-          icon: <TikTokIcon />
-        });
-      });
-    }
-
-    // Spotify data
-    if (artistStats.spotify) {
-      const spotifyFollowers = artistStats.spotify.followers || 0;
-      const formattedFollowers = formatFollowers(spotifyFollowers);
-      
-      ['day', 'week', 'month'].forEach((period) => {
-        const multiplier = period === 'day' ? 0.0005 : period === 'week' ? 0.002 : 0.008;
-        const change = Math.round(spotifyFollowers * multiplier * (0.5 + Math.random() * 0.5));
-        const trend = Math.random() > 0.7 ? 'down' : 'up'; // Spotify sometimes has fluctuations
-        
-        newData[period as TimePeriod].push({
-          platform: 'spotify',
-          label: 'Spotify',
-          followers: formattedFollowers,
-          change: trend === 'down' ? -change : change,
-          changeFormatted: formatChange(trend === 'down' ? -change : change),
-          trend: trend as 'up' | 'down' | 'neutral',
-          data: generateChartData(trend),
-          icon: <SpotifyIcon />
-        });
-      });
-    }
-
-    // YouTube data
-    if (artistStats.youtube) {
-      const youtubeSubscribers = artistStats.youtube.subscribers || 0;
-      const formattedFollowers = formatFollowers(youtubeSubscribers);
-      
-      ['day', 'week', 'month'].forEach((period) => {
-        const multiplier = period === 'day' ? 0.001 : period === 'week' ? 0.005 : 0.02;
-        const change = Math.round(youtubeSubscribers * multiplier * (0.8 + Math.random() * 0.4));
-        const trend = change > 0 ? 'up' : change < 0 ? 'down' : 'neutral';
-        
-        newData[period as TimePeriod].push({
-          platform: 'youtube',
-          label: 'Youtube',
-          followers: formattedFollowers,
-          change: change,
-          changeFormatted: formatChange(change),
-          trend: trend as 'up' | 'down' | 'neutral',
-          data: generateChartData(trend),
-          icon: <YouTubeIcon />
-        });
-      });
-    }
-
-    // Apple Music (mock data as it's not in stats)
-    const appleFollowers = Math.round((artistStats.spotify?.followers || 0) * 0.7);
-    const formattedAppleFollowers = formatFollowers(appleFollowers);
+    const instagramFollowers = baseData.instagram;
+    const formattedInstagram = formatFollowers(instagramFollowers);
     
     ['day', 'week', 'month'].forEach((period) => {
-      const multiplier = period === 'day' ? 0.0003 : period === 'week' ? 0.001 : 0.004;
-      const change = Math.round(appleFollowers * multiplier * (0.8 + Math.random() * 0.4));
+      const multiplier = period === 'day' ? 0.001 : period === 'week' ? 0.005 : 0.02;
+      const change = Math.round(instagramFollowers * multiplier * (0.8 + Math.random() * 0.4));
+      const trend = change > 0 ? 'up' : change < 0 ? 'down' : 'neutral';
       
-      newData[period as TimePeriod].push({
-        platform: 'apple',
-        label: 'Apple',
-        followers: formattedAppleFollowers,
+      newActivityData[period as TimePeriod].push({
+        platform: 'instagram',
+        label: 'Instagram',
+        followers: formattedInstagram,
         change: change,
         changeFormatted: formatChange(change),
-        trend: 'up' as 'up' | 'down' | 'neutral',
-        data: generateChartData('up'),
-        icon: <Apple />
+        trend: trend as 'up' | 'down' | 'neutral',
+        data: generateChartData(trend),
+        icon: <InstagramIcon />
       });
     });
 
-    setActivityData(newData);
+    // TikTok data
+    const tiktokFollowers = baseData.tiktok;
+    const formattedTikTok = formatFollowers(tiktokFollowers);
+    
+    ['day', 'week', 'month'].forEach((period) => {
+      const multiplier = period === 'day' ? 0.002 : period === 'week' ? 0.01 : 0.04;
+      const change = Math.round(tiktokFollowers * multiplier * (0.8 + Math.random() * 0.4));
+      const trend = change > 0 ? 'up' : change < 0 ? 'down' : 'neutral';
+      
+      newActivityData[period as TimePeriod].push({
+        platform: 'tiktok',
+        label: 'Tik-Tok',
+        followers: formattedTikTok,
+        change: change,
+        changeFormatted: formatChange(change),
+        trend: trend as 'up' | 'down' | 'neutral',
+        data: generateChartData(trend),
+        icon: <TikTokIcon />
+      });
+    });
+
+    // Spotify data
+    const spotifyFollowers = baseData.spotify;
+    const formattedSpotify = formatFollowers(spotifyFollowers);
+    
+    ['day', 'week', 'month'].forEach((period) => {
+      const multiplier = period === 'day' ? 0.0005 : period === 'week' ? 0.002 : 0.008;
+      const change = Math.round(spotifyFollowers * multiplier * (0.5 + Math.random() * 0.5));
+      const trend = Math.random() > 0.7 ? 'down' : 'up'; // Spotify sometimes has fluctuations
+      
+      newActivityData[period as TimePeriod].push({
+        platform: 'spotify',
+        label: 'Spotify',
+        followers: formattedSpotify,
+        change: trend === 'down' ? -change : change,
+        changeFormatted: formatChange(trend === 'down' ? -change : change),
+        trend: trend as 'up' | 'down' | 'neutral',
+        data: generateChartData(trend),
+        icon: <SpotifyIcon />
+      });
+    });
+
+    // YouTube data
+    const youtubeSubscribers = baseData.youtube;
+    const formattedYoutube = formatFollowers(youtubeSubscribers);
+    
+    ['day', 'week', 'month'].forEach((period) => {
+      const multiplier = period === 'day' ? 0.001 : period === 'week' ? 0.005 : 0.02;
+      const change = Math.round(youtubeSubscribers * multiplier * (0.8 + Math.random() * 0.4));
+      const trend = change > 0 ? 'up' : change < 0 ? 'down' : 'neutral';
+      
+      newActivityData[period as TimePeriod].push({
+        platform: 'youtube',
+        label: 'Youtube',
+        followers: formattedYoutube,
+        change: change,
+        changeFormatted: formatChange(change),
+        trend: trend as 'up' | 'down' | 'neutral',
+        data: generateChartData(trend),
+        icon: <YouTubeIcon />
+      });
+    });
+
+    // Apple Music data (skip if no real data)
+    if (baseData.apple > 0) {
+      const appleFollowers = baseData.apple;
+      const formattedApple = formatFollowers(appleFollowers);
+      
+      ['day', 'week', 'month'].forEach((period) => {
+        const multiplier = period === 'day' ? 0.0003 : period === 'week' ? 0.001 : 0.004;
+        const change = Math.round(appleFollowers * multiplier * (0.8 + Math.random() * 0.4));
+        
+        newActivityData[period as TimePeriod].push({
+          platform: 'apple',
+          label: 'Apple',
+          followers: formattedApple,
+          change: change,
+          changeFormatted: formatChange(change),
+          trend: 'up' as 'up' | 'down' | 'neutral',
+          data: generateChartData('up'),
+          icon: <Apple />
+        });
+      });
+    }
+
+    setActivityData(newActivityData);
     setIsLoading(false);
   };
 

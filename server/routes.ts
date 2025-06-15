@@ -250,6 +250,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { uuid } = req.params;
       const stats = await soundchartsAPI.getArtistStats(uuid);
+      
+      // Add cache-busting headers to ensure fresh data
+      res.set({
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      });
+      
       res.json(stats);
     } catch (error) {
       console.error("Error fetching artist stats:", error);

@@ -75,14 +75,12 @@ export default function StreamingStatsWidget() {
         });
       }
 
-      // If no real data, use mock data
+      // If no real data, show empty state instead of mock data
       if (data.length === 0) {
-        data.push(
-          { platform: 'Spotify', streams: 45000, revenue: 180, color: '#1DB954' },
-          { platform: 'Apple Music', streams: 32000, revenue: 160, color: '#FC3C44' },
-          { platform: 'YouTube Music', streams: 28000, revenue: 85, color: '#FF0000' },
-          { platform: 'SoundCloud', streams: 18000, revenue: 45, color: '#FF5500' }
-        );
+        setStreamingData([]);
+        setTotalStreams(0);
+        setTotalRevenue(0);
+        return;
       }
 
       setStreamingData(data);
