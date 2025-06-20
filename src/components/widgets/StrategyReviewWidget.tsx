@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { Upload, FileText, Sparkles, TrendingUp, Target, Users, Calendar } from 'lucide-react';
-import { useChat } from '@/contexts/ChatContext';
+import useChatStore from '@/stores/useChatStore';
 
 interface AnalysisResult {
   overallScore: number;
@@ -16,7 +16,7 @@ interface AnalysisResult {
 }
 
 export default function StrategyReviewWidget() {
-  const { addMCMessage } = useChat();
+  const { addMCMessage } = useChatStore();
   const [isDragging, setIsDragging] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -25,10 +25,10 @@ export default function StrategyReviewWidget() {
   // Mock analysis function - in real app, this would call an AI API
   const analyzeDocument = async (file: File) => {
     setIsAnalyzing(true);
-    
+
     // Simulate API call delay
     await new Promise(resolve => setTimeout(resolve, 2000));
-    
+
     // Mock analysis result
     const mockResult: AnalysisResult = {
       overallScore: 82,
@@ -52,7 +52,7 @@ export default function StrategyReviewWidget() {
         "Strengthen call-to-action messaging"
       ]
     };
-    
+
     setAnalysisResult(mockResult);
     setIsAnalyzing(false);
   };
@@ -70,12 +70,12 @@ export default function StrategyReviewWidget() {
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
-    
+
     const droppedFile = e.dataTransfer.files[0];
-    if (droppedFile && (droppedFile.type === 'application/pdf' || 
-                       droppedFile.type === 'application/msword' || 
-                       droppedFile.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
-                       droppedFile.type === 'text/plain')) {
+    if (droppedFile && (droppedFile.type === 'application/pdf' ||
+      droppedFile.type === 'application/msword' ||
+      droppedFile.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
+      droppedFile.type === 'text/plain')) {
       setFile(droppedFile);
       analyzeDocument(droppedFile);
     }
@@ -91,7 +91,7 @@ export default function StrategyReviewWidget() {
 
   const handleLearnMore = () => {
     if (!analysisResult) return;
-    
+
     const message = `📊 Strategy Review Analysis for "${file?.name}"\n\n` +
       `Overall Score: ${analysisResult.overallScore}/100\n\n` +
       `Category Breakdown:\n` +
@@ -103,7 +103,7 @@ export default function StrategyReviewWidget() {
       `💪 Strengths:\n${analysisResult.strengths.map(s => `• ${s}`).join('\n')}\n\n` +
       `🎯 Areas for Improvement:\n${analysisResult.improvements.map(i => `• ${i}`).join('\n')}\n\n` +
       `Would you like me to provide specific recommendations for any of these areas?`;
-    
+
     addMCMessage(message);
   };
 
@@ -133,11 +133,10 @@ export default function StrategyReviewWidget() {
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
-            className={`w-full h-full min-h-[200px] border-2 border-dashed rounded-lg transition-all duration-200 flex flex-col items-center justify-center p-6 ${
-              isDragging 
-                ? 'border-[#03FF96] bg-[#03FF96]/10' 
+            className={`w-full h-full min-h-[200px] border-2 border-dashed rounded-lg transition-all duration-200 flex flex-col items-center justify-center p-6 ${isDragging
+                ? 'border-[#03FF96] bg-[#03FF96]/10'
                 : 'border-gray-600 hover:border-gray-500 bg-gray-800/30'
-            }`}
+              }`}
           >
             <Upload className={`w-12 h-12 mb-4 ${isDragging ? 'text-[#03FF96]' : 'text-gray-400'}`} />
             <p className="text-muted-foreground text-center mb-2">

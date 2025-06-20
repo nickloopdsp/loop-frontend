@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
-import useModeStore, { type ModeStoreType, type DashboardMode, DASHBOARD_MODES } from '@/stores/useModeStore';
+import { type ModeStoreType, type DashboardMode, DASHBOARD_MODES } from '@/stores/useModeStore';
 
 
 

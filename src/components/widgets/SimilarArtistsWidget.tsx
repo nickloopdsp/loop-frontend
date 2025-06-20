@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { useArtist } from '@/contexts/ArtistContext';
 import { soundchartsClient } from '@/lib/soundcharts';
 import { Loader2, Music, Users, Sparkles } from 'lucide-react';
-import { useChat } from '@/contexts/ChatContext';
+import useArtistStore from '@/stores/useArtistStore';
+import useChatStore from '@/stores/useChatStore';
 
 interface SimilarArtist {
   uuid: string;
@@ -15,8 +15,8 @@ interface SimilarArtist {
 }
 
 export default function SimilarArtistsWidget() {
-  const { selectedArtist } = useArtist();
-  const { addMCMessage } = useChat();
+  const { selectedArtist } = useArtistStore();
+  const { addMCMessage } = useChatStore();
   const [similarArtists, setSimilarArtists] = useState<SimilarArtist[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -28,11 +28,11 @@ export default function SimilarArtistsWidget() {
 
   const fetchSimilarArtists = async () => {
     if (!selectedArtist) return;
-    
+
     setIsLoading(true);
     try {
       const response = await soundchartsClient.getSimilarArtists(selectedArtist.uuid);
-      
+
       // Transform the response data
       const artists = response.items?.slice(0, 5) || [];
       setSimilarArtists(artists);
@@ -50,7 +50,7 @@ export default function SimilarArtistsWidget() {
         },
         {
           uuid: '2',
-          name: "Similar Artist 2", 
+          name: "Similar Artist 2",
           genres: ["Pop Rock"],
           similarity: 89,
           followers: 23100000,
@@ -111,7 +111,7 @@ export default function SimilarArtistsWidget() {
       <div className="text-gray-400 text-sm w-full">
         Artists with similar sound and audience overlap
       </div>
-      
+
       {/* Artists list */}
       <div className="space-y-3 w-full flex-1 overflow-y-auto">
         {similarArtists.length > 0 ? (
@@ -119,7 +119,7 @@ export default function SimilarArtistsWidget() {
             <div key={artist.uuid} className="flex items-center justify-between p-3 glass-card rounded-lg">
               <div className="flex items-center gap-3">
                 {artist.image || artist.imageUrl ? (
-                  <img 
+                  <img
                     src={artist.image || artist.imageUrl}
                     alt={artist.name}
                     className="w-12 h-12 rounded-full object-cover"
@@ -145,7 +145,7 @@ export default function SimilarArtistsWidget() {
                     {formatFollowers(artist.followers)} followers
                   </div>
                 </div>
-                <button 
+                <button
                   onClick={() => handleCollaborate(artist)}
                   className="bg-gray-800/50 hover:bg-gray-700/50 text-white text-xs px-2 py-1 rounded-full border border-gray-600/50 flex items-center gap-1 transition-all duration-200 hover:shadow-[0_0_20px_rgba(3,255,150,0.4)] hover:border-[#03FF96]/50"
                 >
@@ -164,13 +164,13 @@ export default function SimilarArtistsWidget() {
 
       {/* Action buttons */}
       <div className="flex gap-3 w-full">
-        <button 
+        <button
           onClick={() => similarArtists[0] && handleCollaborate(similarArtists[0])}
           className="flex-1 py-2 px-4 rounded-lg text-white text-sm font-medium glass-button-primary"
         >
           Collaborate
         </button>
-        <button 
+        <button
           onClick={handleAnalyze}
           className="flex-1 py-2 px-4 rounded-lg text-white text-sm font-medium glass-button"
         >

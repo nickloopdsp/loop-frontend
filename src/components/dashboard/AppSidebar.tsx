@@ -16,47 +16,7 @@ import { useEffect } from "react";
 import WidgetSelector from "./WidgetSelector";
 import CleanupButton from "./CleanupButton";
 import { Plus, RotateCcw } from "lucide-react";
-
-// Custom Icons based on the provided PNG designs
-const LoopIcon = ({ className }: { className?: string }) => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className={className}>
-    <circle cx="9" cy="12" r="6" stroke="currentColor" strokeWidth="2" fill="none"/>
-    <circle cx="15" cy="12" r="6" stroke="currentColor" strokeWidth="2" fill="none"/>
-    <line x1="6" y1="18" x2="18" y2="18" stroke="currentColor" strokeWidth="2"/>
-  </svg>
-);
-
-const DashboardIcon = ({ className }: { className?: string }) => (
-  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className={className}>
-    <rect x="2" y="2" width="7" height="7" rx="1.5" fill="currentColor"/>
-    <rect x="11" y="2" width="7" height="7" rx="1.5" fill="currentColor"/>
-    <rect x="2" y="11" width="7" height="7" rx="1.5" fill="currentColor"/>
-    <rect x="11" y="11" width="7" height="7" rx="1.5" fill="currentColor"/>
-  </svg>
-);
-
-const DiscoverIcon = ({ className }: { className?: string }) => (
-  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className={className}>
-    <circle cx="10" cy="10" r="8" stroke="currentColor" strokeWidth="2" fill="none"/>
-    <path d="M14.31 14.31L19.61 19.61" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-  </svg>
-);
-
-const SocialsIcon = ({ className }: { className?: string }) => (
-  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className={className}>
-    <rect x="3" y="3" width="6" height="6" rx="1" fill="currentColor"/>
-    <rect x="11" y="3" width="6" height="6" rx="1" fill="currentColor"/>
-    <rect x="3" y="11" width="6" height="6" rx="1" fill="currentColor"/>
-    <rect x="11" y="11" width="6" height="6" rx="1" fill="currentColor"/>
-  </svg>
-);
-
-const MCIcon = ({ className }: { className?: string }) => (
-  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className={className}>
-    <rect x="2" y="6" width="16" height="10" rx="3" stroke="currentColor" strokeWidth="2" fill="none"/>
-    <path d="M6 10L8 12L12 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-  </svg>
-);
+import { DashboardIcon, DiscoverIcon, SocialsIcon, MCIcon, LoopIcon } from "@/components/icons";
 
 const navigationItems = [
   { icon: DashboardIcon, label: "Dashboard", active: true },
@@ -77,7 +37,7 @@ interface AppSidebarProps {
 export default function AppSidebar({ onAddWidget, existingWidgets = [], onCleanupDuplicates, onResetMode, currentMode, hasCustomLayout }: AppSidebarProps) {
   const { state } = useSidebar();
   const isCollapsed = state === "collapsed";
-  
+
   // Force complete transparency on mount
   useEffect(() => {
     const forceTransparency = () => {
@@ -93,14 +53,14 @@ export default function AppSidebar({ onAddWidget, existingWidgets = [], onCleanu
         }
       });
     };
-    
+
     // Apply immediately and after a short delay to catch any dynamic elements
     forceTransparency();
     setTimeout(forceTransparency, 100);
   }, []);
 
   return (
-    <Sidebar 
+    <Sidebar
       collapsible="icon"
       className="border-0 border-none [&_[data-sidebar='sidebar']]:bg-transparent [&_[data-sidebar='sidebar']]:!bg-transparent [&_[data-sidebar='sidebar']]:border-0"
       style={{
@@ -130,11 +90,10 @@ export default function AppSidebar({ onAddWidget, existingWidgets = [], onCleanu
               <SidebarMenuButton
                 isActive={item.active}
                 size="lg"
-                className={`w-full justify-start gap-4 px-4 py-3 rounded-xl transition-all text-base ${
-                  item.active
-                    ? 'bg-[#03FF96] text-black hover:bg-[#03FF96]/90 font-medium'
-                    : 'text-[#03FF96] hover:bg-[#03FF96]/10 hover:text-[#03FF96] dark:text-[#03FF96] light:text-[#047C4B]'
-                } ${isCollapsed ? 'justify-center' : ''}`}
+                className={`w-full justify-start gap-4 px-4 py-3 rounded-xl transition-all text-base ${item.active
+                  ? 'bg-[#03FF96] text-black hover:bg-[#03FF96]/90 font-medium'
+                  : 'text-[#03FF96] hover:bg-[#03FF96]/10 hover:text-[#03FF96] dark:text-[#03FF96] light:text-[#047C4B]'
+                  } ${isCollapsed ? 'justify-center' : ''}`}
               >
                 <div className="flex items-center gap-4">
                   <item.icon className="h-5 w-5 flex-shrink-0" />
@@ -144,7 +103,7 @@ export default function AppSidebar({ onAddWidget, existingWidgets = [], onCleanu
             </SidebarMenuItem>
           ))}
         </SidebarMenu>
-        
+
         {/* Add Widget Section */}
         <div className="mt-6 pt-6 border-t border-[#03FF96]/20">
           <SidebarMenuItem>
@@ -171,9 +130,8 @@ export default function AppSidebar({ onAddWidget, existingWidgets = [], onCleanu
                            before:absolute before:inset-0 before:bg-gradient-to-r 
                            before:from-transparent before:via-white/20 before:to-transparent
                            before:translate-x-[-100%] before:skew-x-12
-                           hover:before:translate-x-[100%] before:transition-transform before:duration-700 before:ease-out ${
-                  isCollapsed ? 'justify-center' : ''
-                }`}
+                           hover:before:translate-x-[100%] before:transition-transform before:duration-700 before:ease-out ${isCollapsed ? 'justify-center' : ''
+                  }`}
               >
                 <div className="flex items-center gap-4">
                   <div className="p-1.5 rounded-lg bg-[#03FF96]/20 border border-[#03FF96]/30 flex-shrink-0">
@@ -184,14 +142,14 @@ export default function AppSidebar({ onAddWidget, existingWidgets = [], onCleanu
               </SidebarMenuButton>
             </WidgetSelector>
           </SidebarMenuItem>
-          
+
           {/* Cleanup Button - only show if there are duplicates */}
           {onCleanupDuplicates && existingWidgets.length > new Set(existingWidgets).size && (
             <SidebarMenuItem className="mt-2">
               <CleanupButton onCleanup={onCleanupDuplicates} />
             </SidebarMenuItem>
           )}
-          
+
           {/* Reset Mode Button - show when user has customized the layout */}
           {onResetMode && currentMode && hasCustomLayout && (
             <SidebarMenuItem className="mt-2">
@@ -206,9 +164,8 @@ export default function AppSidebar({ onAddWidget, existingWidgets = [], onCleanu
                            hover:border-red-500/30
                            hover:shadow-lg hover:shadow-red-500/10
                            active:scale-[0.98] active:shadow-inner
-                           backdrop-blur-sm font-medium ${
-                  isCollapsed ? 'justify-center' : ''
-                }`}
+                           backdrop-blur-sm font-medium ${isCollapsed ? 'justify-center' : ''
+                  }`}
               >
                 <div className="flex items-center gap-4">
                   <div className="p-1.5 rounded-lg bg-red-500/20 border border-red-500/30 flex-shrink-0">

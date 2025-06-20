@@ -1,12 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { useState, useRef, useEffect } from "react";
 import { Sparkles, Loader2 } from "lucide-react";
-import { useChat } from "@/contexts/ChatContext";
 import { useAIChat } from "@/hooks/useAIChat";
 import useArtistStore from "@/stores/useArtistStore";
+import useChatStore from "@/stores/useChatStore";
 
 export default function MCChatWidget() {
-  const { messages, addMessage } = useChat();
+  const { messages, addMessage } = useChatStore();
   const [userMessage, setUserMessage] = useState("");
   const [isThinking, setIsThinking] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);

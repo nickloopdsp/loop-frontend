@@ -1,19 +1,8 @@
+import { ChatStoreType, ChatMessage } from '@/stores/useChatStore';
 import { createContext, useContext, useState, ReactNode } from 'react';
 
-interface ChatMessage {
-  id: string;
-  sender: 'mc' | 'user';
-  message: string;
-  timestamp: Date;
-}
 
-interface ChatContextType {
-  messages: ChatMessage[];
-  addMessage: (message: Omit<ChatMessage, 'id' | 'timestamp'>) => void;
-  addMCMessage: (message: string) => void;
-}
-
-const ChatContext = createContext<ChatContextType | undefined>(undefined);
+const ChatContext = createContext<ChatStoreType | undefined>(undefined);
 
 const initialMessages: ChatMessage[] = [
   {
@@ -46,11 +35,3 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     </ChatContext.Provider>
   );
 }
-
-export function useChat() {
-  const context = useContext(ChatContext);
-  if (context === undefined) {
-    throw new Error('useChat must be used within a ChatProvider');
-  }
-  return context;
-} 

@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
 import { Calendar, MapPin, Loader2, Music, Sparkles, Users } from "lucide-react";
-import { useArtist } from "@/contexts/ArtistContext";
+import useArtistStore from "@/stores/useArtistStore";
 import { soundchartsClient, ArtistEvent } from "@/lib/soundcharts";
-import { useChat } from "@/contexts/ChatContext";
+import useChatStore from "@/stores/useChatStore";
 
 type EventType = 'all' | 'concerts' | 'festivals';
 
 export default function EventsWidget() {
-  const { selectedArtist } = useArtist();
-  const { addMCMessage } = useChat();
+  const { selectedArtist } = useArtistStore();
+  const { addMCMessage } = useChatStore();
   const [events, setEvents] = useState<ArtistEvent[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [activeFilter, setActiveFilter] = useState<EventType>('all');
@@ -21,7 +21,7 @@ export default function EventsWidget() {
 
   const fetchEvents = async () => {
     if (!selectedArtist) return;
-    
+
     setIsLoading(true);
     try {
       const artistEvents = await soundchartsClient.getArtistEvents(selectedArtist.uuid);
@@ -82,8 +82,8 @@ export default function EventsWidget() {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      month: 'short', 
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
       day: 'numeric',
       year: 'numeric'
     });
@@ -117,35 +117,32 @@ export default function EventsWidget() {
       {/* Filter Tabs */}
       <div className="relative mb-4">
         <div className="glass-tabs p-1 flex relative">
-          <div 
+          <div
             className="absolute top-1 bottom-1 bg-white/10 dark:bg-white/10 light:bg-black/10 rounded-full transition-all duration-300 ease-out"
             style={{
               left: activeFilter === 'all' ? '4px' : activeFilter === 'concerts' ? '33.33%' : '66.67%',
               width: 'calc(33.33% - 4px)',
             }}
           />
-          
-          <button 
+
+          <button
             onClick={() => setActiveFilter('all')}
-            className={`relative z-10 text-sm px-4 py-2 flex-1 transition-colors duration-200 ${
-              activeFilter === 'all' ? 'text-foreground font-medium' : 'text-muted-foreground'
-            }`}
+            className={`relative z-10 text-sm px-4 py-2 flex-1 transition-colors duration-200 ${activeFilter === 'all' ? 'text-foreground font-medium' : 'text-muted-foreground'
+              }`}
           >
             All
           </button>
-          <button 
+          <button
             onClick={() => setActiveFilter('concerts')}
-            className={`relative z-10 text-sm px-4 py-2 flex-1 transition-colors duration-200 ${
-              activeFilter === 'concerts' ? 'text-foreground font-medium' : 'text-muted-foreground'
-            }`}
+            className={`relative z-10 text-sm px-4 py-2 flex-1 transition-colors duration-200 ${activeFilter === 'concerts' ? 'text-foreground font-medium' : 'text-muted-foreground'
+              }`}
           >
             Concerts
           </button>
-          <button 
+          <button
             onClick={() => setActiveFilter('festivals')}
-            className={`relative z-10 text-sm px-4 py-2 flex-1 transition-colors duration-200 ${
-              activeFilter === 'festivals' ? 'text-foreground font-medium' : 'text-muted-foreground'
-            }`}
+            className={`relative z-10 text-sm px-4 py-2 flex-1 transition-colors duration-200 ${activeFilter === 'festivals' ? 'text-foreground font-medium' : 'text-muted-foreground'
+              }`}
           >
             Festivals
           </button>
@@ -165,8 +162,8 @@ export default function EventsWidget() {
         ) : filteredEvents.length > 0 ? (
           <div className="space-y-3">
             {filteredEvents.map((event) => (
-              <div 
-                key={event.id} 
+              <div
+                key={event.id}
                 className="glass-item p-4"
               >
                 <div className="flex items-start justify-between gap-3">
@@ -177,7 +174,7 @@ export default function EventsWidget() {
                       </span>
                       <h4 className="text-foreground font-medium">{event.name}</h4>
                     </div>
-                    
+
                     <div className="space-y-1 text-sm text-muted-foreground">
                       <div className="flex items-center gap-2">
                         <Calendar className="w-4 h-4" />
@@ -189,9 +186,9 @@ export default function EventsWidget() {
                       </div>
                     </div>
                   </div>
-                  
+
                   {/* MC Button */}
-                  <button 
+                  <button
                     onClick={() => handleMCClick(event)}
                     className="bg-gray-800/50 hover:bg-gray-700/50 text-white text-sm px-3 py-1.5 rounded-full border border-gray-600/50 flex items-center gap-1.5 transition-all duration-200 hover:shadow-[0_0_20px_rgba(3,255,150,0.4)] hover:border-[#03FF96]/50"
                   >

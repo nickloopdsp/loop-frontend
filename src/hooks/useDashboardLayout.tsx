@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from "react";
 import { WidgetData } from "@/types";
 import useLocalStorage from "./useLocalStorage";
-import { DashboardMode } from "@/contexts/ModeContext";
+import { type DashboardMode } from "@/stores/useModeStore";
 
 const defaultLayout: WidgetData[] = [
   // MC Chat - Full width at top (reduced height)

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { TrendingUp, Users, Sparkles, Loader2 } from "lucide-react";
-import { useChat } from "@/contexts/ChatContext";
 import useArtistStore from "@/stores/useArtistStore";
+import useChatStore from "@/stores/useChatStore";
 import { soundchartsClient } from "@/lib/soundcharts";
 
 interface SocialStat {
@@ -61,7 +61,7 @@ const mockTrends: SocialTrend[] = [
 ];
 
 export default function SocialMediaTracker() {
-  const { addMCMessage } = useChat();
+  const { addMCMessage } = useChatStore();
   const { selectedArtist, artistStats } = useArtistStore();
   const [activeTab, setActiveTab] = useState<'stats' | 'trends'>('stats');
   const [socialStats, setSocialStats] = useState<SocialStat[]>([]);

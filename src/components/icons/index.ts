@@ -3,3 +3,7 @@ export * from './DiscoverIcon';
 export * from './LoopIcon';
 export * from './MCIcon';
 export * from './SocialsIcon';
+export * from './SpotifyIcon';
+export * from './TikTokIcon';
+export * from './YouTubeIcon';
+export * from './InstagramIcon';
