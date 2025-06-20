@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import type { ChatMessage } from '@shared/schema';
+import type { ChatMessage } from '@/types';
 
 interface AIContext {
   artistName?: string;
@@ -19,13 +19,13 @@ export function useAIChat() {
   const [isLoading, setIsLoading] = useState(false);
 
   const sendMessageMutation = useMutation({
-    mutationFn: async ({ 
-      message, 
-      conversationHistory = [], 
-      context = {} 
-    }: { 
-      message: string; 
-      conversationHistory?: ChatMessage[]; 
+    mutationFn: async ({
+      message,
+      conversationHistory = [],
+      context = {}
+    }: {
+      message: string;
+      conversationHistory?: ChatMessage[];
       context?: AIContext;
     }) => {
       const response = await fetch('/api/chat/message', {

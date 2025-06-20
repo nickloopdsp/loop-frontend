@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { X, Send, Loader2 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
-import { ChatMessage } from "@shared/schema";
+import { ChatMessage } from "@/types";
 import { mockArtistProfile } from "@/lib/mockData";
 import { useAIChat } from "@/hooks/useAIChat";
 import { useArtist } from "@/contexts/ArtistContext";
@@ -20,7 +20,7 @@ export default function MCChatDock({ isOpen, onClose }: MCChatDockProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const scrollTimeoutRef = useRef<NodeJS.Timeout>();
-  
+
   const { sendMessage } = useAIChat();
   const { selectedArtist, artistStats } = useArtist();
 
@@ -50,7 +50,7 @@ export default function MCChatDock({ isOpen, onClose }: MCChatDockProps) {
       if (scrollTimeoutRef.current) {
         clearTimeout(scrollTimeoutRef.current);
       }
-      
+
       // Delay scroll slightly to prevent jarring movement
       scrollTimeoutRef.current = setTimeout(() => {
         // Only scroll the chat container, not the whole page
@@ -60,7 +60,7 @@ export default function MCChatDock({ isOpen, onClose }: MCChatDockProps) {
         }
       }, 100);
     }
-    
+
     return () => {
       if (scrollTimeoutRef.current) {
         clearTimeout(scrollTimeoutRef.current);
@@ -145,20 +145,19 @@ export default function MCChatDock({ isOpen, onClose }: MCChatDockProps) {
   }, [isOpen]);
 
   return (
-    <div 
-      className={`fixed right-0 top-0 h-full w-96 bg-card border-l border-border shadow-2xl z-50 transition-transform duration-300 ease-in-out ${
-        isOpen ? 'translate-x-0' : 'translate-x-full'
-      }`}
-      role="dialog" 
-      aria-labelledby="chat-title" 
+    <div
+      className={`fixed right-0 top-0 h-full w-96 bg-card border-l border-border shadow-2xl z-50 transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : 'translate-x-full'
+        }`}
+      role="dialog"
+      aria-labelledby="chat-title"
       aria-modal="true"
     >
       <CardHeader className="border-b border-border">
         <div className="flex items-center justify-between">
           <CardTitle id="chat-title" className="text-lg font-semibold">MC Assistant</CardTitle>
-          <Button 
+          <Button
             ref={closeButtonRef}
-            variant="ghost" 
+            variant="ghost"
             size="icon"
             onClick={handleClose}
             aria-label="Close chat"
@@ -169,11 +168,11 @@ export default function MCChatDock({ isOpen, onClose }: MCChatDockProps) {
         </div>
         <p className="text-sm text-muted-foreground">Your AI-powered music career assistant</p>
       </CardHeader>
-      
+
       <CardContent className="flex flex-col h-full p-0">
         <div className="flex-1 overflow-y-auto p-6 space-y-4" style={{ height: "calc(100vh - 200px)" }}>
           {messages.map((msg) => (
-            <div 
+            <div
               key={msg.id}
               className={`flex items-start space-x-3 ${msg.sender === 'user' ? 'justify-end' : ''}`}
             >
@@ -182,25 +181,24 @@ export default function MCChatDock({ isOpen, onClose }: MCChatDockProps) {
                   <span className="text-white text-xs font-bold">MC</span>
                 </div>
               )}
-              
-              <div className={`max-w-xs rounded-xl p-4 ${
-                msg.sender === 'user' 
-                  ? 'bg-primary text-primary-foreground' 
-                  : 'bg-muted text-foreground'
-              }`}>
+
+              <div className={`max-w-xs rounded-xl p-4 ${msg.sender === 'user'
+                ? 'bg-primary text-primary-foreground'
+                : 'bg-muted text-foreground'
+                }`}>
                 <p className="text-sm whitespace-pre-line">{msg.message}</p>
               </div>
-              
+
               {msg.sender === 'user' && (
-                <img 
+                <img
                   src={mockArtistProfile.avatar}
-                  alt="Your profile" 
-                  className="w-8 h-8 rounded-full flex-shrink-0" 
+                  alt="Your profile"
+                  className="w-8 h-8 rounded-full flex-shrink-0"
                 />
               )}
             </div>
           ))}
-          
+
           {/* Thinking animation */}
           {isThinking && (
             <div className="flex items-start space-x-3">
@@ -216,10 +214,10 @@ export default function MCChatDock({ isOpen, onClose }: MCChatDockProps) {
               </div>
             </div>
           )}
-          
+
           <div ref={messagesEndRef} />
         </div>
-        
+
         <form onSubmit={handleSendMessage} className="p-6 border-t border-border">
           <div className="flex space-x-3">
             <Input
@@ -231,7 +229,7 @@ export default function MCChatDock({ isOpen, onClose }: MCChatDockProps) {
               className="flex-1"
               disabled={isThinking}
             />
-            <Button 
+            <Button
               type="submit"
               disabled={!message.trim() || isThinking}
               className="bg-primary hover:bg-primary/90 text-primary-foreground"

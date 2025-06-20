@@ -1,4 +1,4 @@
-import { HealthMetrics, TrendingItem, GeoData, TodoItem, ChatMessage } from "@shared/schema";
+import { HealthMetrics, TrendingItem, GeoData, TodoItem, ChatMessage } from "@/types";
 
 export const mockHealthMetrics: HealthMetrics = {
   streams: "2.1M",

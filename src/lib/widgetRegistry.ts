@@ -1,4 +1,4 @@
-import { WidgetData } from "@shared/schema";
+import { WidgetData } from "@/types";
 import ArtistHealthMonitor from "@/components/widgets/ArtistHealthMonitor";
 import TrendTracker from "@/components/widgets/TrendTracker";
 import ArtistMapTool from "@/components/widgets/ArtistMapTool";

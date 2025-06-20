@@ -1,4 +1,4 @@
-import { WidgetData } from "@shared/schema";
+import { WidgetData } from "@/types";
 import { getWidgetComponent } from "@/lib/widgetRegistry";
 import { useMemo, useState, useEffect } from "react";
 import { useMode } from "@/contexts/ModeContext";
@@ -13,14 +13,14 @@ interface DashboardGridProps {
   onAddWidget?: (widgetType: string) => void;
 }
 
-export default function DashboardGrid({ 
-  layout, 
-  onLayoutChange, 
-  isDragging, 
+export default function DashboardGrid({
+  layout,
+  onLayoutChange,
+  isDragging,
   setIsDragging,
   onAddWidget
 }: DashboardGridProps) {
-  
+
   const [screenSize, setScreenSize] = useState<'sm' | 'md' | 'lg'>('lg');
   const { currentMode, showMCAssistTooltip, setShowMCAssistTooltip } = useMode();
 
@@ -56,30 +56,30 @@ export default function DashboardGrid({
   const getResponsiveSpan = (originalW: number) => {
     const gridCols = getGridCols();
     const maxCols = 12; // Original design max columns
-    
+
     // Calculate proportional width
     let span = Math.round((originalW / maxCols) * gridCols);
-    
+
     // Ensure minimum span of 1 and maximum of current grid columns
     span = Math.max(1, Math.min(span, gridCols));
-    
+
     return span;
   };
-  
+
   const renderedWidgets = useMemo(() => {
     return layout.map((widget) => {
       const WidgetComponent = getWidgetComponent(widget.type);
       if (!WidgetComponent) return null;
-      
+
       // Calculate responsive spans
       const responsiveW = getResponsiveSpan(widget.w);
-      
+
       // Determine if widget should use compact styling based on size
       const isCompact = responsiveW <= 2 && widget.h <= 4;
-      
+
       // MC Chat widget has its own styling, don't wrap it
       const shouldWrapWithGlass = widget.type !== 'mc-chat';
-      
+
       return (
         <div
           key={widget.id}
@@ -121,14 +121,14 @@ export default function DashboardGrid({
 
   // Add placeholder widgets for empty spaces
   const existingWidgetTypes = layout.map(w => w.type);
-  
+
   // Check if there's an incomplete row that needs a second widget
   const shouldShowPlaceholder = useMemo(() => {
     if (!onAddWidget) return false;
-    
+
     // Group widgets by their row positions
     const rowGroups = new Map<number, WidgetData[]>();
-    
+
     layout.forEach(widget => {
       // For each row this widget occupies
       for (let row = widget.y; row < widget.y + widget.h; row++) {
@@ -142,12 +142,12 @@ export default function DashboardGrid({
         }
       }
     });
-    
+
     // Check each row to see if it has space for another widget
     for (let [row, widgets] of rowGroups.entries()) {
       let totalWidth = 0;
       let hasFullWidthWidget = false;
-      
+
       widgets.forEach(widget => {
         totalWidth = Math.max(totalWidth, widget.x + widget.w);
         // Check if this widget is full-width (or close to it)
@@ -155,28 +155,28 @@ export default function DashboardGrid({
           hasFullWidthWidget = true;
         }
       });
-      
+
       // If this row has space for another widget and no full-width widgets
       if (!hasFullWidthWidget && totalWidth <= 6 && totalWidth > 0) {
         return true; // Show placeholder - there's a row with only one widget
       }
     }
-    
+
     // Also show if there are no widgets at all
     return layout.length === 0;
   }, [layout, onAddWidget]);
-  
+
   // Find the best position for the placeholder
   const placeholderPosition = useMemo(() => {
     if (!shouldShowPlaceholder) return null;
-    
+
     if (layout.length === 0) {
       return { x: 0, y: 0, w: 6, h: 4 };
     }
-    
+
     // Find the row with only one widget
     const rowGroups = new Map<number, WidgetData[]>();
-    
+
     layout.forEach(widget => {
       for (let row = widget.y; row < widget.y + widget.h; row++) {
         if (!rowGroups.has(row)) {
@@ -188,32 +188,32 @@ export default function DashboardGrid({
         }
       }
     });
-    
+
     for (let [row, widgets] of rowGroups.entries()) {
       let maxEndX = 0;
       let hasFullWidthWidget = false;
-      
+
       widgets.forEach(widget => {
         maxEndX = Math.max(maxEndX, widget.x + widget.w);
         if (['global-map', 'ai-todo', 'mc-chat', 'concerts'].includes(widget.type) || widget.w >= 10) {
           hasFullWidthWidget = true;
         }
       });
-      
+
       // If this row has space and no full-width widgets
       if (!hasFullWidthWidget && maxEndX <= 6 && maxEndX > 0) {
         return { x: maxEndX, y: row, w: 12 - maxEndX, h: 4 };
       }
     }
-    
+
     // Fallback: place at the bottom
     const maxY = Math.max(...layout.map(w => w.y + w.h), 0);
     return { x: 0, y: maxY, w: 6, h: 4 };
   }, [layout, shouldShowPlaceholder]);
-  
+
   return (
     <div className="w-full">
-      <div 
+      <div
         className="grid gap-6 w-full grid-cols-4 md:grid-cols-8 lg:grid-cols-12"
         style={{
           gridAutoRows: '120px',

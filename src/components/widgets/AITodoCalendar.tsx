@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { Calendar } from "lucide-react";
-import { TodoItem } from "@shared/schema";
+import { TodoItem } from "@/types";
 
 export default function AITodoCalendar() {
   const { data: todos, isLoading } = useQuery({
@@ -59,30 +59,29 @@ export default function AITodoCalendar() {
           </div>
         </div>
       </CardHeader>
-      
+
       <CardContent className="p-6 pt-0">
         <div className="grid grid-cols-3 gap-4">
           {columns.map((column, index) => (
             <div key={index} className="space-y-3">
               <h4 className="text-sm font-medium text-foreground flex items-center">
                 <div className={`w-2 h-2 ${column.color} rounded-full mr-2`}></div>
-                {column.title} 
+                {column.title}
                 <span className="ml-auto text-xs text-muted-foreground">{column.count}</span>
               </h4>
               <div className="space-y-2">
                 {column.items.slice(0, 2).map((item: TodoItem) => (
-                  <div 
+                  <div
                     key={item.id}
-                    className={`bg-muted p-3 rounded-lg cursor-pointer hover:bg-muted/80 transition-colors ${
-                      item.status === 'done' ? 'opacity-75' : ''
-                    }`}
+                    className={`bg-muted p-3 rounded-lg cursor-pointer hover:bg-muted/80 transition-colors ${item.status === 'done' ? 'opacity-75' : ''
+                      }`}
                   >
                     <p className="text-sm font-medium">{item.title}</p>
                     {item.dueDate && (
                       <p className="text-xs text-muted-foreground mt-1">
-                        Due: {new Date(item.dueDate).toLocaleDateString('en-US', { 
-                          month: 'short', 
-                          day: 'numeric' 
+                        Due: {new Date(item.dueDate).toLocaleDateString('en-US', {
+                          month: 'short',
+                          day: 'numeric'
                         })}
                       </p>
                     )}
