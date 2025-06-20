@@ -1,26 +1,26 @@
 import { useState, useCallback, useEffect } from "react";
-import { WidgetData } from "../../shared/schema";
+import { WidgetData } from "@/types";
 import useLocalStorage from "./useLocalStorage";
 import { DashboardMode } from "@/contexts/ModeContext";
 
 const defaultLayout: WidgetData[] = [
   // MC Chat - Full width at top (reduced height)
   { id: "mc-chat", type: "mc-chat", x: 0, y: 0, w: 12, h: 5, minW: 8, minH: 4 },
-  
+
   // Row 2: Fans and Followers Activity side by side
   { id: "fans", type: "fans", x: 0, y: 5, w: 6, h: 5, minW: 4, minH: 4 },
   { id: "followers-activity", type: "followers-activity", x: 6, y: 5, w: 6, h: 5, minW: 4, minH: 4 },
-  
+
   // Row 3: Checklist/Calendar - Full width
   { id: "concerts", type: "concerts", x: 0, y: 10, w: 12, h: 3, minW: 6, minH: 3 },
-  
+
   // Row 4: Global Map - Full width (moved under calendar)
   { id: "global-map", type: "global-map", x: 0, y: 13, w: 12, h: 5, minW: 6, minH: 4 },
-  
+
   // Row 5: Score and Top Songs side by side
   { id: "score", type: "score", x: 0, y: 18, w: 6, h: 4, minW: 3, minH: 3 },
   { id: "top-songs", type: "top-songs", x: 6, y: 18, w: 6, h: 4, minW: 3, minH: 3 },
-  
+
   // Row 6: Music.AI widgets - Generate Chords and Stem Separation
   { id: "generate-chords", type: "generate-chords", x: 0, y: 22, w: 6, h: 4, minW: 3, minH: 3 },
   { id: "stem-separation", type: "stem-separation", x: 6, y: 22, w: 6, h: 4, minW: 3, minH: 3 },
@@ -93,7 +93,7 @@ const modeLayouts: Record<DashboardMode, WidgetData[]> = {
 const responsiveLayouts = {
   // Desktop layout (lg: 12 columns)
   lg: defaultLayout,
-  
+
   // Tablet layout (md: 8 columns) - stacked layout
   md: [
     { id: "mc-chat", type: "mc-chat", x: 0, y: 0, w: 8, h: 5, minW: 6, minH: 4 },
@@ -106,7 +106,7 @@ const responsiveLayouts = {
     { id: "generate-chords", type: "generate-chords", x: 0, y: 22, w: 4, h: 4, minW: 3, minH: 3 },
     { id: "stem-separation", type: "stem-separation", x: 4, y: 22, w: 4, h: 4, minW: 3, minH: 3 },
   ],
-  
+
   // Mobile layout (sm: 4 columns) - single column
   sm: [
     { id: "mc-chat", type: "mc-chat", x: 0, y: 0, w: 4, h: 5, minW: 4, minH: 4 },
@@ -169,7 +169,7 @@ export function useDashboardLayout(mode?: DashboardMode) {
   const addWidget = useCallback((widget: WidgetData) => {
     const currentWidgets = currentLayout;
     const newLayout = [...currentWidgets, widget];
-    
+
     if (mode && mode !== 'standard') {
       // Save to mode-specific custom layout
       setCustomLayouts(prev => ({ ...prev, [mode]: newLayout }));
@@ -180,7 +180,7 @@ export function useDashboardLayout(mode?: DashboardMode) {
 
   const removeWidget = useCallback((widgetId: string) => {
     const filteredLayout = currentLayout.filter(w => w.id !== widgetId);
-    
+
     if (mode && mode !== 'standard') {
       // Save to mode-specific custom layout
       setCustomLayouts(prev => ({ ...prev, [mode]: filteredLayout }));

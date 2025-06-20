@@ -8,7 +8,7 @@ import { widgetRegistry, WidgetConfig } from '@/lib/widgetRegistry';
 import { Plus } from 'lucide-react';
 
 interface WidgetSelectorProps {
-  onWidgetSelect: (widgetType: string) => void;
+  onWidgetSelect?: (widgetType: string) => void;
   existingWidgets: string[];
   children?: React.ReactNode;
 }
@@ -25,7 +25,7 @@ export default function WidgetSelector({ onWidgetSelect, existingWidgets, childr
   );
 
   const handleWidgetSelect = (widgetType: string) => {
-    onWidgetSelect(widgetType);
+    onWidgetSelect?.(widgetType);
     setIsOpen(false);
   };
 
@@ -50,7 +50,7 @@ export default function WidgetSelector({ onWidgetSelect, existingWidgets, childr
         <ScrollArea className="h-[60vh] pr-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {availableWidgets.map((widget: WidgetConfig) => (
-              <Card 
+              <Card
                 key={widget.id}
                 className="cursor-pointer hover:shadow-lg transition-shadow duration-200 hover:border-[#03FF96]/50"
                 onClick={() => handleWidgetSelect(widget.id)}

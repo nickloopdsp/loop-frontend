@@ -5,7 +5,7 @@ import { Calendar } from "lucide-react";
 import { TodoItem } from "@/types";
 
 export default function AITodoCalendar() {
-  const { data: todos, isLoading } = useQuery({
+  const { data: todos, isLoading }: any = useQuery({
     queryKey: ["/api/mock/todos"],
   });
 

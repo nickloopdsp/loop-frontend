@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { MapPin } from "lucide-react";
 
 export default function ArtistMapTool() {
-  const { data: geoData, isLoading } = useQuery({
+  const { data: geoData, isLoading }: any = useQuery({
     queryKey: ["/api/mock/geo-data"],
   });
 
@@ -41,15 +41,15 @@ export default function ArtistMapTool() {
           </Button>
         </div>
       </CardHeader>
-      
+
       <CardContent className="p-6 pt-0">
         <div className="h-64 bg-muted/30 rounded-lg relative overflow-hidden mb-4">
-          <img 
-            src="https://images.unsplash.com/photo-1516738901171-8eb4fc13bd20?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=300" 
-            alt="World map visualization showing fan density" 
-            className="w-full h-full object-cover opacity-50" 
+          <img
+            src="https://images.unsplash.com/photo-1516738901171-8eb4fc13bd20?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=300"
+            alt="World map visualization showing fan density"
+            className="w-full h-full object-cover opacity-50"
           />
-          
+
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="space-y-4 text-center">
               <div className="flex justify-center space-x-8">
@@ -61,7 +61,7 @@ export default function ArtistMapTool() {
             </div>
           </div>
         </div>
-        
+
         <div className="grid grid-cols-3 gap-4">
           <div className="text-center">
             <p className="text-lg font-bold text-blue-400">{geoData?.topRegion.listeners}</p>

@@ -3,15 +3,15 @@ import { Plus } from 'lucide-react';
 import WidgetSelector from './WidgetSelector';
 
 interface AddWidgetPlaceholderProps {
-  onAddWidget: (widgetType: string) => void;
+  onAddWidget?: (widgetType: string) => void;
   existingWidgets: string[];
   className?: string;
 }
 
-export default function AddWidgetPlaceholder({ 
-  onAddWidget, 
-  existingWidgets, 
-  className = '' 
+export default function AddWidgetPlaceholder({
+  onAddWidget,
+  existingWidgets,
+  className = ''
 }: AddWidgetPlaceholderProps) {
   return (
     <WidgetSelector
