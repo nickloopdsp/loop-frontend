@@ -1,15 +1,15 @@
 import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
-import { 
-  Bot, 
-  LayoutDashboard, 
-  Music, 
-  Mic, 
-  Megaphone, 
-  Sparkles, 
-  TrendingUp 
+import {
+  Bot,
+  LayoutDashboard,
+  Music,
+  Mic,
+  Megaphone,
+  Sparkles,
+  TrendingUp
 } from 'lucide-react';
 
-export type DashboardMode = 
+export type DashboardMode =
   | 'mc-assist'
   | 'standard'
   | 'recording'
