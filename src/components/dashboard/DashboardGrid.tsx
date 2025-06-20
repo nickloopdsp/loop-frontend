@@ -1,7 +1,7 @@
 import { WidgetData } from "@/types";
 import { getWidgetComponent } from "@/lib/widgetRegistry";
 import { useMemo, useState, useEffect } from "react";
-import { useMode } from "@/contexts/ModeContext";
+import useModeStore from "@/stores/useModeStore";
 import MCAssistTooltip from "@/components/MCAssistTooltip";
 import AddWidgetPlaceholder from "./AddWidgetPlaceholder";
 
@@ -22,7 +22,7 @@ export default function DashboardGrid({
 }: DashboardGridProps) {
 
   const [screenSize, setScreenSize] = useState<'sm' | 'md' | 'lg'>('lg');
-  const { currentMode, showMCAssistTooltip, setShowMCAssistTooltip } = useMode();
+  const { showMCAssistTooltip, setShowMCAssistTooltip } = useModeStore();
 
   // Handle responsive layout changes
   useEffect(() => {

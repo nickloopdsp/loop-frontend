@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { TrendingUp, Users, Sparkles, Loader2 } from "lucide-react";
 import { useChat } from "@/contexts/ChatContext";
-import { useArtist } from "@/contexts/ArtistContext";
+import useArtistStore from "@/stores/useArtistStore";
 import { soundchartsClient } from "@/lib/soundcharts";
 
 interface SocialStat {
@@ -62,7 +62,7 @@ const mockTrends: SocialTrend[] = [
 
 export default function SocialMediaTracker() {
   const { addMCMessage } = useChat();
-  const { selectedArtist, artistStats } = useArtist();
+  const { selectedArtist, artistStats } = useArtistStore();
   const [activeTab, setActiveTab] = useState<'stats' | 'trends'>('stats');
   const [socialStats, setSocialStats] = useState<SocialStat[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -76,7 +76,7 @@ export default function SocialMediaTracker() {
 
   const fetchSocialStats = async () => {
     if (!selectedArtist) return;
-    
+
     setIsLoading(true);
     try {
       // Fetch data for different platforms
@@ -189,30 +189,28 @@ export default function SocialMediaTracker() {
       {/* Tab Filter */}
       <div className="relative mb-4">
         <div className="glass-tabs p-1 flex relative">
-          <div 
+          <div
             className="absolute top-1 bottom-1 bg-white/10 dark:bg-white/10 light:bg-black/10 rounded-full transition-all duration-300 ease-out"
             style={{
               left: activeTab === 'stats' ? '4px' : '50%',
               width: 'calc(50% - 4px)',
             }}
           />
-          
-          <button 
+
+          <button
             onClick={() => setActiveTab('stats')}
-            className={`relative z-10 text-sm px-4 py-2 flex-1 transition-colors duration-200 ${
-              activeTab === 'stats' ? 'text-foreground font-medium' : 'text-muted-foreground'
-            }`}
+            className={`relative z-10 text-sm px-4 py-2 flex-1 transition-colors duration-200 ${activeTab === 'stats' ? 'text-foreground font-medium' : 'text-muted-foreground'
+              }`}
           >
             <div className="flex items-center justify-center gap-2">
               <Users className="w-4 h-4" />
               Stats
             </div>
           </button>
-          <button 
+          <button
             onClick={() => setActiveTab('trends')}
-            className={`relative z-10 text-sm px-4 py-2 flex-1 transition-colors duration-200 ${
-              activeTab === 'trends' ? 'text-foreground font-medium' : 'text-muted-foreground'
-            }`}
+            className={`relative z-10 text-sm px-4 py-2 flex-1 transition-colors duration-200 ${activeTab === 'trends' ? 'text-foreground font-medium' : 'text-muted-foreground'
+              }`}
           >
             <div className="flex items-center justify-center gap-2">
               <TrendingUp className="w-4 h-4" />
@@ -233,12 +231,12 @@ export default function SocialMediaTracker() {
             <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
           </div>
         ) : (
-        <div className="space-y-3">
+          <div className="space-y-3">
             {activeTab === 'stats' ? (
               socialStats.length > 0 ? (
                 socialStats.map((stat, index) => (
-                  <div 
-                    key={index} 
+                  <div
+                    key={index}
                     className="glass-item p-3"
                   >
                     <div className="flex items-start justify-between gap-3">
@@ -257,10 +255,10 @@ export default function SocialMediaTracker() {
                           <span className="text-green-400">+{stat.growth}%</span>
                         </div>
                       </div>
-                      
+
                       {/* Right side - MC button */}
                       <div className="flex flex-col items-end gap-2">
-                        <button 
+                        <button
                           onClick={() => handleMCClick(stat)}
                           className="bg-gray-800/50 hover:bg-gray-700/50 text-white text-sm px-3 py-1.5 rounded-full border border-gray-600/50 flex items-center gap-1.5 transition-all duration-200 hover:shadow-[0_0_20px_rgba(3,255,150,0.4)] hover:border-[#03FF96]/50"
                         >
@@ -277,42 +275,42 @@ export default function SocialMediaTracker() {
                 </div>
               )
             ) : (
-            mockTrends.map((trend, index) => (
-              <div 
-                key={index} 
-                className="glass-item p-3"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className={`text-xs px-2 py-0.5 rounded-full ${getPlatformColor(trend.platform)}`}>
-                        {trend.platform}
+              mockTrends.map((trend, index) => (
+                <div
+                  key={index}
+                  className="glass-item p-3"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className={`text-xs px-2 py-0.5 rounded-full ${getPlatformColor(trend.platform)}`}>
+                          {trend.platform}
+                        </span>
+                        <span className="text-foreground font-medium">{trend.hashtag}</span>
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        {trend.engagement} • {trend.growth}
+                      </div>
+                    </div>
+
+                    {/* Right side - relevance and MC button */}
+                    <div className="flex flex-col items-end gap-2">
+                      <span className={`text-xs ${getRelevanceColor(trend.relevance)}`}>
+                        {trend.relevance}
                       </span>
-                      <span className="text-foreground font-medium">{trend.hashtag}</span>
+                      <button
+                        onClick={() => handleMCClick(trend)}
+                        className="bg-gray-800/50 hover:bg-gray-700/50 text-white text-sm px-3 py-1.5 rounded-full border border-gray-600/50 flex items-center gap-1.5 transition-all duration-200 hover:shadow-[0_0_20px_rgba(3,255,150,0.4)] hover:border-[#03FF96]/50"
+                      >
+                        <Sparkles className="w-3.5 h-3.5" />
+                        MC
+                      </button>
                     </div>
-                    <div className="text-sm text-muted-foreground">
-                      {trend.engagement} • {trend.growth}
-                    </div>
-                  </div>
-                  
-                  {/* Right side - relevance and MC button */}
-                  <div className="flex flex-col items-end gap-2">
-                    <span className={`text-xs ${getRelevanceColor(trend.relevance)}`}>
-                      {trend.relevance}
-                    </span>
-                    <button 
-                      onClick={() => handleMCClick(trend)}
-                      className="bg-gray-800/50 hover:bg-gray-700/50 text-white text-sm px-3 py-1.5 rounded-full border border-gray-600/50 flex items-center gap-1.5 transition-all duration-200 hover:shadow-[0_0_20px_rgba(3,255,150,0.4)] hover:border-[#03FF96]/50"
-                    >
-                      <Sparkles className="w-3.5 h-3.5" />
-                      MC
-                    </button>
                   </div>
                 </div>
-              </div>
-            ))
-          )}
-        </div>
+              ))
+            )}
+          </div>
         )}
       </div>
     </div>

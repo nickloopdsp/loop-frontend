@@ -2,7 +2,7 @@ import React from 'react';
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts';
 import { useState, useEffect, useRef } from 'react';
 import { ChevronDown, ChevronUp, Loader2 } from 'lucide-react';
-import { useArtist } from '@/contexts/ArtistContext';
+import useArtistStore from '@/stores/useArtistStore';
 import { soundchartsClient } from '@/lib/soundcharts';
 
 type TimePeriod = 'day' | 'week' | 'month';
@@ -53,7 +53,7 @@ function CustomTooltip({ active, payload, label }: any) {
 }
 
 export default function FansWidget() {
-  const { selectedArtist, artistStats } = useArtist();
+  const { selectedArtist, artistStats } = useArtistStore();
   const [selectedPeriod, setSelectedPeriod] = useState<TimePeriod>('week');
   const [selectedPlatform, setSelectedPlatform] = useState<Platform>('spotify');
   const [showMore, setShowMore] = useState(false);
@@ -86,13 +86,13 @@ export default function FansWidget() {
 
   const generateDataFromStats = () => {
     setIsLoading(true);
-    
+
     // Only use real artist stats data - no fallbacks to mock data
     if (!artistStats) {
       setIsLoading(false);
       return;
     }
-    
+
     const baseValues: Record<Platform, number> = {
       spotify: artistStats?.spotify?.followers || 0,
       instagram: artistStats?.instagram?.followers || 0,
@@ -114,7 +114,7 @@ export default function FansWidget() {
     platforms.forEach(platform => {
       const baseValue = baseValues[platform];
       newData[platform] = {} as any;
-      
+
       // Generate day data (last 7 days)
       const dayData: FansData[] = [];
       for (let i = 6; i >= 0; i--) {
@@ -129,7 +129,7 @@ export default function FansWidget() {
         });
       }
       newData[platform].day = dayData;
-      
+
       // Generate week data (last 5 weeks)
       const weekData: FansData[] = [];
       for (let i = 4; i >= 0; i--) {
@@ -146,7 +146,7 @@ export default function FansWidget() {
         });
       }
       newData[platform].week = weekData;
-      
+
       // Generate month data (last 5 months)
       const monthData: FansData[] = [];
       for (let i = 4; i >= 0; i--) {
@@ -212,7 +212,7 @@ export default function FansWidget() {
       {/* Header */}
       <div className="flex items-center justify-between w-full mb-4">
         <h3 className="text-lg font-semibold">Fans</h3>
-        <button 
+        <button
           onClick={() => setShowMore(!showMore)}
           className="text-green-400 text-sm hover:text-green-300 transition-colors flex items-center gap-1"
         >
@@ -220,7 +220,7 @@ export default function FansWidget() {
           {showMore ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
         </button>
       </div>
-      
+
       {/* Growth indicator */}
       <div className={`text-sm w-full mb-4 ${growthPercent >= 0 ? 'text-green-400' : 'text-red-400'}`}>
         {growthPercent >= 0 ? '+' : ''}{growthPercent.toFixed(1)}% from last period
@@ -228,7 +228,7 @@ export default function FansWidget() {
 
       {/* Platform Selection - Show More Popup */}
       {showMore && (
-        <div 
+        <div
           ref={dropdownRef}
           className="absolute top-12 right-0 z-50 p-4 rounded-lg border border-gray-600/50 shadow-xl min-w-[250px]"
           style={{
@@ -245,13 +245,12 @@ export default function FansWidget() {
                   setSelectedPlatform(key as Platform);
                   setShowMore(false);
                 }}
-                className={`text-left text-sm px-3 py-2 rounded-lg transition-all duration-200 ${
-                  selectedPlatform === key
+                className={`text-left text-sm px-3 py-2 rounded-lg transition-all duration-200 ${selectedPlatform === key
                     ? 'bg-white/10 text-white'
                     : 'text-muted-foreground hover:text-white hover:bg-white/5'
-                }`}
+                  }`}
               >
-                <span 
+                <span
                   className="inline-block w-2 h-2 rounded-full mr-2"
                   style={{ backgroundColor: platformColors[key as Platform] }}
                 />
@@ -261,95 +260,92 @@ export default function FansWidget() {
           </div>
         </div>
       )}
-      
+
       {/* Sliding Pill Tabs */}
       <div className="relative mb-4">
         <div className="glass-tabs p-1 flex relative">
           {/* Sliding background */}
-          <div 
+          <div
             className="absolute top-1 bottom-1 bg-white/10 dark:bg-white/10 light:bg-black/10 rounded-full transition-all duration-300 ease-out"
             style={{
               left: selectedPeriod === 'day' ? '4px' : selectedPeriod === 'week' ? '33.33%' : '66.66%',
               width: selectedPeriod === 'day' ? 'calc(33.33% - 4px)' : selectedPeriod === 'week' ? '33.33%' : 'calc(33.33% - 4px)',
             }}
           />
-          
+
           {/* Tab buttons */}
-          <button 
+          <button
             onClick={() => setSelectedPeriod('day')}
-            className={`relative z-10 text-sm px-4 py-2 flex-1 transition-colors duration-200 ${
-              selectedPeriod === 'day' ? 'text-foreground font-medium' : 'text-muted-foreground'
-            }`}
+            className={`relative z-10 text-sm px-4 py-2 flex-1 transition-colors duration-200 ${selectedPeriod === 'day' ? 'text-foreground font-medium' : 'text-muted-foreground'
+              }`}
           >
             Day
           </button>
-          <button 
+          <button
             onClick={() => setSelectedPeriod('week')}
-            className={`relative z-10 text-sm px-4 py-2 flex-1 transition-colors duration-200 ${
-              selectedPeriod === 'week' ? 'text-foreground font-medium' : 'text-muted-foreground'
-            }`}
+            className={`relative z-10 text-sm px-4 py-2 flex-1 transition-colors duration-200 ${selectedPeriod === 'week' ? 'text-foreground font-medium' : 'text-muted-foreground'
+              }`}
           >
             Week
           </button>
-          <button 
+          <button
             onClick={() => setSelectedPeriod('month')}
-            className={`relative z-10 text-sm px-4 py-2 flex-1 transition-colors duration-200 ${
-              selectedPeriod === 'month' ? 'text-foreground font-medium' : 'text-muted-foreground'
-            }`}
+            className={`relative z-10 text-sm px-4 py-2 flex-1 transition-colors duration-200 ${selectedPeriod === 'month' ? 'text-foreground font-medium' : 'text-muted-foreground'
+              }`}
           >
             Month
           </button>
         </div>
       </div>
-      
+
       {/* Date range */}
       <div className="text-muted-foreground text-xs w-full mb-4">
         {getDateRange()}
       </div>
-      
+
       {/* Chart with glow effect */}
       <div className="flex-1 w-full mb-4 relative">
         {currentData.length > 0 ? (
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart 
+            <LineChart
               data={currentData}
               margin={{ top: 20, right: 30, left: 30, bottom: 20 }}
             >
               <defs>
                 <filter id="glow">
-                  <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-                  <feMerge> 
-                    <feMergeNode in="coloredBlur"/>
-                    <feMergeNode in="SourceGraphic"/>
+                  <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+                  <feMerge>
+                    <feMergeNode in="coloredBlur" />
+                    <feMergeNode in="SourceGraphic" />
                   </feMerge>
                 </filter>
               </defs>
-              <XAxis 
-                dataKey="time" 
+              <XAxis
+                dataKey="time"
                 axisLine={false}
                 tickLine={false}
                 tick={{ fontSize: 12 }}
                 tickMargin={10}
                 className="fill-muted-foreground"
               />
-              <YAxis 
-                hide 
+              <YAxis
+                hide
                 domain={['dataMin - dataMin * 0.2', 'dataMax + dataMax * 0.2']}
               />
               <Tooltip content={<CustomTooltip />} />
-              <Line 
-                type="monotone" 
-                dataKey="fans" 
+              <Line
+                type="monotone"
+                dataKey="fans"
                 stroke={platformColors[selectedPlatform]}
                 strokeWidth={3}
                 dot={false}
-                activeDot={{ 
-                  r: 6, 
-                  stroke: platformColors[selectedPlatform], 
-                  strokeWidth: 3, 
+                activeDot={{
+                  r: 6,
+                  stroke: platformColors[selectedPlatform],
+                  strokeWidth: 3,
                   fill: platformColors[selectedPlatform],
                   filter: "url(#glow)",
-                  style: { 
+                  style: {
                     boxShadow: `0 0 20px ${platformColors[selectedPlatform]}`,
                     filter: "drop-shadow(0 0 8px rgba(16, 185, 129, 0.6))"
                   }

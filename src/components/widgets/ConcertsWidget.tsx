@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { useState, useRef, useEffect } from "react";
 import { Sparkles, ChevronLeft, ChevronRight, Clock, Info, MapPin, Calendar } from "lucide-react";
-import { useArtist } from "@/contexts/ArtistContext";
+import useArtistStore from "@/stores/useArtistStore";
 import { soundchartsClient, ArtistEvent } from "@/lib/soundcharts";
 
 type TabType = 'todos' | 'mc';
@@ -32,7 +32,7 @@ const todoData: TodoItem[] = [
   },
   {
     id: 2,
-    task: "Post stories on Instagram", 
+    task: "Post stories on Instagram",
     time: "09:00 pm - 10:00 pm",
     date: "December 18",
     type: "regular",
@@ -41,7 +41,7 @@ const todoData: TodoItem[] = [
   {
     id: 3,
     task: "Do an Instagram stream",
-    time: "07:00 am - 11:00 am", 
+    time: "07:00 am - 11:00 am",
     date: "December 22",
     type: "regular",
     status: "done"
@@ -50,7 +50,7 @@ const todoData: TodoItem[] = [
     id: 4,
     task: "Post short on YouTube",
     time: "10:00 am - 11:00 am",
-    date: "January 5", 
+    date: "January 5",
     type: "regular",
     status: "todo"
   },
@@ -102,7 +102,7 @@ const mcSuggestedTodos: TodoItem[] = [
   {
     id: 6,
     task: "Engage with fan comments from yesterday's posts",
-    time: "11:00 am - 12:00 pm", 
+    time: "11:00 am - 12:00 pm",
     date: "September 27",
     type: "mc",
     status: "in-progress",
@@ -180,14 +180,14 @@ const calendarDays = [
 
 const calendarGrid = [
   [29, 30, 31, 1, 2, 3, 4],
-  [5, 6, 7, 8, 9, 10, 11], 
+  [5, 6, 7, 8, 9, 10, 11],
   [12, 13, 14, 15, 16, 17, 18],
   [19, 20, 21, 22, 23, 24, 25],
   [26, 27, 28, 29, 30, 31, 1]
 ];
 
 export default function ConcertsWidget() {
-  const { selectedArtist } = useArtist();
+  const { selectedArtist } = useArtistStore();
   const [activeTab, setActiveTab] = useState<TabType>('todos');
   const [currentMonth, setCurrentMonth] = useState('January 2022');
   const [selectedDate, setSelectedDate] = useState<number | null>(8); // Default to date 8 as shown in Figma
@@ -223,7 +223,7 @@ export default function ConcertsWidget() {
         country: event.venue?.country || "TBA",
         eventType: event.type
       }));
-      
+
       setConcertTodos(concertTodoItems);
     };
 
@@ -235,7 +235,7 @@ export default function ConcertsWidget() {
       setEvents(getMockEvents());
       return;
     }
-    
+
     try {
       const artistEvents = await soundchartsClient.getArtistEvents(selectedArtist.uuid);
       setEvents(artistEvents);
@@ -308,8 +308,8 @@ export default function ConcertsWidget() {
 
   const formatEventDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      month: 'long', 
+    return date.toLocaleDateString('en-US', {
+      month: 'long',
       day: 'numeric'
     });
   };
@@ -337,8 +337,8 @@ export default function ConcertsWidget() {
   };
 
   const currentTodos = getAllTodos();
-  const totalEvents = activeTab === 'todos' 
-    ? concertTodos.length + todoData.length + scheduledMcTodos.length 
+  const totalEvents = activeTab === 'todos'
+    ? concertTodos.length + todoData.length + scheduledMcTodos.length
     : mcSuggestedTodos.length - scheduledMcTodos.length;
 
 
@@ -364,7 +364,7 @@ export default function ConcertsWidget() {
       type: 'scheduled-mc' as const
     };
     setScheduledMcTodos(prev => [...prev, scheduledTodo]);
-    
+
     // Highlight the date in calendar
     const todoDate = new Date(todo.date);
     const day = todoDate.getDate();
@@ -388,7 +388,7 @@ export default function ConcertsWidget() {
 
   const getStatusIndicator = (todo: TodoItem) => {
     const status = todo.status || "todo"; // Default to "todo" if status is not set
-    
+
     const statusColors = {
       "todo": "#FB923D",      // Orange
       "in-progress": "#3B82F6", // Blue
@@ -396,7 +396,7 @@ export default function ConcertsWidget() {
     };
 
     return (
-      <div 
+      <div
         className="w-2 h-2 rounded-full flex-shrink-0"
         style={{
           backgroundColor: statusColors[status],
@@ -429,7 +429,7 @@ export default function ConcertsWidget() {
         </div>
       );
     }
-    
+
     return (
       <div className="flex items-center gap-2 text-muted-foreground text-xs">
         {getTaskIcon(todo)}
@@ -464,7 +464,7 @@ export default function ConcertsWidget() {
         <div className="flex items-center gap-2">
           <h3 className="text-lg font-semibold">To-Do's</h3>
           <span className="text-muted-foreground text-sm">
-            {totalEvents} events this month 
+            {totalEvents} events this month
             {activeTab === 'todos' && concertTodos.length > 0 && (
               <span className="text-orange-400"> • {concertTodos.length} concerts</span>
             )}
@@ -481,30 +481,28 @@ export default function ConcertsWidget() {
         <div className="flex gap-3 items-center">
           <div className="glass-tabs p-1 flex relative w-fit">
             {/* Sliding background */}
-            <div 
+            <div
               className="absolute top-1 bottom-1 bg-white/10 dark:bg-white/10 light:bg-black/10 rounded-full transition-all duration-300 ease-out"
               style={{
                 left: activeTab === 'todos' ? '4px' : '50%',
                 width: activeTab === 'todos' ? 'calc(50% - 4px)' : 'calc(50% - 4px)',
               }}
             />
-            
+
             {/* Tab buttons */}
-            <button 
+            <button
               onClick={() => setActiveTab('todos')}
-              className={`relative z-10 text-sm px-6 py-2 transition-colors duration-200 ${
-                activeTab === 'todos' ? 'text-foreground font-medium' : 'text-muted-foreground'
-              }`}
+              className={`relative z-10 text-sm px-6 py-2 transition-colors duration-200 ${activeTab === 'todos' ? 'text-foreground font-medium' : 'text-muted-foreground'
+                }`}
             >
               To-Do's
             </button>
-            <button 
+            <button
               onClick={() => setActiveTab('mc')}
-              className={`relative z-10 text-sm px-6 py-2 transition-all duration-200 flex items-center gap-2 ${
-                activeTab === 'mc' 
-                  ? 'text-foreground font-medium' 
+              className={`relative z-10 text-sm px-6 py-2 transition-all duration-200 flex items-center gap-2 ${activeTab === 'mc'
+                  ? 'text-foreground font-medium'
                   : 'text-muted-foreground'
-              }`}
+                }`}
               style={{
                 ...(activeTab === 'mc' && {
                   color: '#03FF96',
@@ -517,12 +515,12 @@ export default function ConcertsWidget() {
               MC
             </button>
           </div>
-          
+
           {/* Status Legend - Only show for todos tab */}
           {activeTab === 'todos' && (
             <div className="flex items-center gap-3 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">
               <div className="flex items-center gap-1.5">
-                <div 
+                <div
                   className="w-2 h-2 rounded-full"
                   style={{
                     backgroundColor: '#FB923D',
@@ -532,7 +530,7 @@ export default function ConcertsWidget() {
                 <span className="text-xs text-muted-foreground">To Do</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <div 
+                <div
                   className="w-2 h-2 rounded-full"
                   style={{
                     backgroundColor: '#3B82F6',
@@ -542,7 +540,7 @@ export default function ConcertsWidget() {
                 <span className="text-xs text-muted-foreground">In Progress</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <div 
+                <div
                   className="w-2 h-2 rounded-full"
                   style={{
                     backgroundColor: '#10B981',
@@ -561,8 +559,8 @@ export default function ConcertsWidget() {
         {/* Left Column - Todo List */}
         <div className="flex-1 min-w-0 h-full overflow-y-auto space-y-2 pr-2">
           {currentTodos.map((todo) => (
-            <div 
-              key={todo.id} 
+            <div
+              key={todo.id}
               className="relative flex items-center justify-between py-2 px-3 text-white rounded-lg cursor-pointer hover:brightness-110 transition-all duration-200"
               style={{
                 ...getTaskBackground(todo),
@@ -581,7 +579,7 @@ export default function ConcertsWidget() {
                 {/* Show "Add to calendar" button and AI tooltip for MC suggestions only */}
                 {todo.type === 'mc' && (
                   <div className="flex items-center gap-2 flex-shrink-0">
-                    <button 
+                    <button
                       onClick={(e) => {
                         e.stopPropagation(); // Prevent triggering todo click
                         handleAddToCalendar(todo);
@@ -590,7 +588,7 @@ export default function ConcertsWidget() {
                     >
                       Add to calendar
                     </button>
-                    <div 
+                    <div
                       className="relative"
                       onMouseEnter={() => handleTooltipMouseEnter(todo.id)}
                       onMouseLeave={handleTooltipMouseLeave}
@@ -607,7 +605,7 @@ export default function ConcertsWidget() {
         </div>
 
         {/* Right Column - Calendar */}
-        <div 
+        <div
           className="flex flex-col w-80 h-full p-4 rounded-lg"
           style={{
             background: 'rgba(255, 255, 255, 0.03)',
@@ -627,7 +625,7 @@ export default function ConcertsWidget() {
               </button>
             </div>
           </div>
-          
+
           {/* Calendar Grid */}
           <div className="w-full flex-1">
             {/* Day headers */}
@@ -638,7 +636,7 @@ export default function ConcertsWidget() {
                 </div>
               ))}
             </div>
-            
+
             {/* Calendar dates grid */}
             <div className="grid grid-cols-7 gap-1.5">
               {calendarGrid.flat().map((date, index) => {
@@ -646,7 +644,7 @@ export default function ConcertsWidget() {
                 const isSelected = selectedDate === date && isCurrentMonth;
                 const isHighlighted = highlightedDate === date && isCurrentMonth;
                 const isToday = date === 26 && isCurrentMonth;
-                
+
                 return (
                   <div key={index} className="flex items-center justify-center">
                     <button
@@ -669,7 +667,7 @@ export default function ConcertsWidget() {
                     >
                       {/* Green circular background for selected date */}
                       {isSelected && (
-                        <div 
+                        <div
                           className="absolute inset-0 rounded-full"
                           style={{
                             background: '#03FF96',
@@ -678,7 +676,7 @@ export default function ConcertsWidget() {
                       )}
                       {/* Blue/teal circular background for highlighted date (different from selected) */}
                       {isHighlighted && !isSelected && (
-                        <div 
+                        <div
                           className="absolute inset-0 rounded-full"
                           style={{
                             background: 'rgba(3, 255, 150, 0.3)',
@@ -700,9 +698,9 @@ export default function ConcertsWidget() {
       {hoveredTodo && activeTab === 'mc' && (() => {
         const hoveredMcTodo = mcSuggestedTodos.find(todo => todo.id === hoveredTodo);
         if (!hoveredMcTodo) return null;
-        
+
         return (
-          <div 
+          <div
             className="fixed w-80 p-4 rounded-lg border border-gray-600/50 shadow-xl"
             style={{
               background: 'rgba(20, 20, 20, 0.95)',
@@ -725,7 +723,7 @@ export default function ConcertsWidget() {
                   </p>
                 </div>
               </div>
-              <button 
+              <button
                 onClick={() => handleLearnMore(hoveredMcTodo)}
                 className="w-full px-3 py-2 text-xs bg-green-400/10 hover:bg-green-400/20 text-green-400 rounded-lg border border-green-400/30 transition-all duration-200 font-medium"
               >

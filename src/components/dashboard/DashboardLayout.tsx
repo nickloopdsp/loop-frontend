@@ -6,13 +6,13 @@ import MCChatDock from "@/components/chat/MCChatDock";
 import { useState, useRef, useCallback } from "react";
 import { useDashboardLayout } from "@/hooks/useDashboardLayout";
 import { useTheme } from "@/providers/ThemeProvider";
-import { useMode } from "@/contexts/ModeContext";
+import useModeStore from "@/stores/useModeStore";
 import { createWidget } from "@/lib/widgetRegistry";
 import { WidgetData } from "@/types";
 
 export default function DashboardLayout() {
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const { currentMode } = useMode();
+  const { currentMode } = useModeStore();
   const { layout, updateLayout, addWidget, removeWidget, resetModeLayout, isDragging, setIsDragging } = useDashboardLayout(currentMode);
   const { theme } = useTheme();
 

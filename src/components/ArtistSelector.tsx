@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Search, Music, CheckCircle, X, User, LogOut } from 'lucide-react';
 import { soundchartsClient } from '@/lib/soundcharts';
-import { useArtist } from '@/contexts/ArtistContext';
-import { cn } from '@/lib/utils';
+import useArtistStore from '@/stores/useArtistStore';
 
 interface ArtistSelectorProps {
   isOpen: boolean;
@@ -26,11 +25,11 @@ export const ArtistSelector: React.FC<ArtistSelectorProps> = ({ isOpen, onClose,
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const popupRef = useRef<HTMLDivElement>(null);
-  const { selectedArtist, selectArtist, clearArtist } = useArtist();
+  const { selectedArtist, selectArtist, clearArtist } = useArtistStore();
 
   // Calculate popup position
   const [position, setPosition] = useState({ top: 0, right: 0 });
-  
+
   useEffect(() => {
     if (anchorEl && isOpen) {
       const rect = anchorEl.getBoundingClientRect();
@@ -44,8 +43,8 @@ export const ArtistSelector: React.FC<ArtistSelectorProps> = ({ isOpen, onClose,
   // Close popup when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (popupRef.current && !popupRef.current.contains(event.target as Node) && 
-          anchorEl && !anchorEl.contains(event.target as Node)) {
+      if (popupRef.current && !popupRef.current.contains(event.target as Node) &&
+        anchorEl && !anchorEl.contains(event.target as Node)) {
         onClose();
       }
     };
@@ -104,7 +103,7 @@ export const ArtistSelector: React.FC<ArtistSelectorProps> = ({ isOpen, onClose,
   if (!isOpen) return null;
 
   return (
-    <div 
+    <div
       ref={popupRef}
       className="fixed z-50 w-96 bg-black/90 backdrop-blur-xl rounded-xl border border-white/20 shadow-2xl overflow-hidden"
       style={{
@@ -180,7 +179,7 @@ export const ArtistSelector: React.FC<ArtistSelectorProps> = ({ isOpen, onClose,
             <p className="text-white/60 text-sm mb-3">
               Search and select your artist profile to access personalized data and insights.
             </p>
-            
+
             {/* Search Input */}
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/60 w-5 h-5" />

@@ -1,7 +1,7 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { TrendingUp, Play, Users, DollarSign, Loader2 } from "lucide-react";
 import { useEffect, useState } from 'react';
-import { useArtist } from '@/contexts/ArtistContext';
+import useArtistStore from '@/stores/useArtistStore';
 import { soundchartsClient } from '@/lib/soundcharts';
 
 interface StreamingPlatform {
@@ -13,7 +13,7 @@ interface StreamingPlatform {
 }
 
 export default function StreamingStatsWidget() {
-  const { selectedArtist, artistStats } = useArtist();
+  const { selectedArtist, artistStats } = useArtistStore();
   const [streamingData, setStreamingData] = useState<StreamingPlatform[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [totalStreams, setTotalStreams] = useState(0);
@@ -27,7 +27,7 @@ export default function StreamingStatsWidget() {
 
   const fetchStreamingData = async () => {
     if (!selectedArtist) return;
-    
+
     setIsLoading(true);
     try {
       // Try to get streaming data from multiple platforms
@@ -39,7 +39,7 @@ export default function StreamingStatsWidget() {
       ];
 
       const data: StreamingPlatform[] = [];
-      
+
       // Use artist stats if available
       if (artistStats?.spotify) {
         data.push({
@@ -144,7 +144,7 @@ export default function StreamingStatsWidget() {
           </p>
         </div>
       </div>
-      
+
       {/* Chart */}
       <div className="h-48 w-full">
         <ResponsiveContainer width="100%" height="100%">
@@ -152,7 +152,7 @@ export default function StreamingStatsWidget() {
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.1)" />
             <XAxis dataKey="platform" tick={{ fontSize: 12, fill: '#9CA3AF' }} />
             <YAxis tick={{ fontSize: 12, fill: '#9CA3AF' }} />
-            <Tooltip 
+            <Tooltip
               formatter={(value, name) => [
                 name === 'streams' ? `${value?.toLocaleString()} listeners` : `$${value?.toLocaleString()}`,
                 name === 'streams' ? 'Monthly Listeners' : 'Est. Revenue'
@@ -168,14 +168,14 @@ export default function StreamingStatsWidget() {
           </BarChart>
         </ResponsiveContainer>
       </div>
-      
+
       {/* Platform List */}
       <div className="space-y-2 w-full">
         {streamingData.map((platform, index) => (
           <div key={index} className="flex items-center justify-between p-3 glass-card rounded-lg">
             <div className="flex items-center gap-3">
-              <div 
-                className="w-3 h-3 rounded-full" 
+              <div
+                className="w-3 h-3 rounded-full"
                 style={{ backgroundColor: platform.color }}
               />
               <span className="font-medium text-white">{platform.platform}</span>

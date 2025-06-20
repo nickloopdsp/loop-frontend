@@ -3,30 +3,30 @@ import { LineChart, Line, ResponsiveContainer } from 'recharts';
 import { useState, useEffect } from 'react';
 import { Sparkles, MoreHorizontal, Music, Play, Apple, Loader2 } from 'lucide-react';
 import { useChat } from '@/contexts/ChatContext';
-import { useArtist } from '@/contexts/ArtistContext';
+import useArtistStore from '@/stores/useArtistStore';
 
 // Custom SVG Icons for platforms not available in Lucide
 const InstagramIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
   </svg>
 );
 
 const TikTokIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M19.321 5.562a5.124 5.124 0 0 1-.443-.258 6.228 6.228 0 0 1-1.137-.966c-.849-.972-1.341-2.264-1.341-3.591V0h-3.714v13.822c0 .815-.062 1.077-.169 1.394-.346 1.017-1.316 1.784-2.477 1.784-1.364 0-2.477-1.108-2.477-2.477s1.113-2.477 2.477-2.477c.297 0 .583.053.851.151V8.302c-.284-.041-.575-.062-.851-.062-3.477 0-6.29 2.813-6.29 6.29s2.813 6.29 6.29 6.29 6.29-2.813 6.29-6.29V8.484c1.376.971 3.062 1.541 4.896 1.541V6.31c-.815 0-1.595-.188-2.302-.538z"/>
+    <path d="M19.321 5.562a5.124 5.124 0 0 1-.443-.258 6.228 6.228 0 0 1-1.137-.966c-.849-.972-1.341-2.264-1.341-3.591V0h-3.714v13.822c0 .815-.062 1.077-.169 1.394-.346 1.017-1.316 1.784-2.477 1.784-1.364 0-2.477-1.108-2.477-2.477s1.113-2.477 2.477-2.477c.297 0 .583.053.851.151V8.302c-.284-.041-.575-.062-.851-.062-3.477 0-6.29 2.813-6.29 6.29s2.813 6.29 6.29 6.29 6.29-2.813 6.29-6.29V8.484c1.376.971 3.062 1.541 4.896 1.541V6.31c-.815 0-1.595-.188-2.302-.538z" />
   </svg>
 );
 
 const SpotifyIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.42 1.56-.299.421-1.02.599-1.559.3z"/>
+    <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.42 1.56-.299.421-1.02.599-1.559.3z" />
   </svg>
 );
 
 const YouTubeIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
   </svg>
 );
 
@@ -242,10 +242,10 @@ const mcInsights: Record<Platform, MCTooltipData> = {
 const getDateRange = (period: TimePeriod) => {
   const today = new Date();
   const formatDate = (date: Date) => {
-    return date.toLocaleDateString('en-US', { 
-      month: 'short', 
-      day: 'numeric', 
-      year: 'numeric' 
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
     });
   };
 
@@ -266,7 +266,7 @@ const getDateRange = (period: TimePeriod) => {
 
 export default function FollowersActivityWidget() {
   const { addMCMessage } = useChat();
-  const { selectedArtist, artistStats } = useArtist();
+  const { selectedArtist, artistStats } = useArtistStore();
   const [selectedPeriod, setSelectedPeriod] = useState<TimePeriod>('week');
   const [activeTooltip, setActiveTooltip] = useState<Platform | null>(null);
   const [platformOrder, setPlatformOrder] = useState<Platform[]>(['instagram', 'tiktok', 'spotify', 'apple', 'youtube']);
@@ -286,7 +286,7 @@ export default function FollowersActivityWidget() {
 
   const generateActivityData = () => {
     setIsLoading(true);
-    
+
     // Generate data based on real artist stats, with no fallbacks to mock data
     if (!artistStats) {
       setActivityData(mockActivityData);
@@ -312,12 +312,12 @@ export default function FollowersActivityWidget() {
     // Instagram data
     const instagramFollowers = baseData.instagram;
     const formattedInstagram = formatFollowers(instagramFollowers);
-    
+
     ['day', 'week', 'month'].forEach((period) => {
       const multiplier = period === 'day' ? 0.001 : period === 'week' ? 0.005 : 0.02;
       const change = Math.round(instagramFollowers * multiplier * (0.8 + Math.random() * 0.4));
       const trend = change > 0 ? 'up' : change < 0 ? 'down' : 'neutral';
-      
+
       newActivityData[period as TimePeriod].push({
         platform: 'instagram',
         label: 'Instagram',
@@ -333,12 +333,12 @@ export default function FollowersActivityWidget() {
     // TikTok data
     const tiktokFollowers = baseData.tiktok;
     const formattedTikTok = formatFollowers(tiktokFollowers);
-    
+
     ['day', 'week', 'month'].forEach((period) => {
       const multiplier = period === 'day' ? 0.002 : period === 'week' ? 0.01 : 0.04;
       const change = Math.round(tiktokFollowers * multiplier * (0.8 + Math.random() * 0.4));
       const trend = change > 0 ? 'up' : change < 0 ? 'down' : 'neutral';
-      
+
       newActivityData[period as TimePeriod].push({
         platform: 'tiktok',
         label: 'Tik-Tok',
@@ -354,12 +354,12 @@ export default function FollowersActivityWidget() {
     // Spotify data
     const spotifyFollowers = baseData.spotify;
     const formattedSpotify = formatFollowers(spotifyFollowers);
-    
+
     ['day', 'week', 'month'].forEach((period) => {
       const multiplier = period === 'day' ? 0.0005 : period === 'week' ? 0.002 : 0.008;
       const change = Math.round(spotifyFollowers * multiplier * (0.5 + Math.random() * 0.5));
       const trend = Math.random() > 0.7 ? 'down' : 'up'; // Spotify sometimes has fluctuations
-      
+
       newActivityData[period as TimePeriod].push({
         platform: 'spotify',
         label: 'Spotify',
@@ -375,12 +375,12 @@ export default function FollowersActivityWidget() {
     // YouTube data
     const youtubeSubscribers = baseData.youtube;
     const formattedYoutube = formatFollowers(youtubeSubscribers);
-    
+
     ['day', 'week', 'month'].forEach((period) => {
       const multiplier = period === 'day' ? 0.001 : period === 'week' ? 0.005 : 0.02;
       const change = Math.round(youtubeSubscribers * multiplier * (0.8 + Math.random() * 0.4));
       const trend = change > 0 ? 'up' : change < 0 ? 'down' : 'neutral';
-      
+
       newActivityData[period as TimePeriod].push({
         platform: 'youtube',
         label: 'Youtube',
@@ -397,11 +397,11 @@ export default function FollowersActivityWidget() {
     if (baseData.apple > 0) {
       const appleFollowers = baseData.apple;
       const formattedApple = formatFollowers(appleFollowers);
-      
+
       ['day', 'week', 'month'].forEach((period) => {
         const multiplier = period === 'day' ? 0.0003 : period === 'week' ? 0.001 : 0.004;
         const change = Math.round(appleFollowers * multiplier * (0.8 + Math.random() * 0.4));
-        
+
         newActivityData[period as TimePeriod].push({
           platform: 'apple',
           label: 'Apple',
@@ -442,7 +442,7 @@ export default function FollowersActivityWidget() {
     const length = 7;
     const data: number[] = [];
     let value = 2 + Math.random() * 2;
-    
+
     for (let i = 0; i < length; i++) {
       if (trend === 'up') {
         value += Math.random() * 0.5;
@@ -453,21 +453,21 @@ export default function FollowersActivityWidget() {
       }
       data.push(Math.max(0.5, Math.min(5, value)));
     }
-    
+
     return data;
   };
 
   const currentData = activityData[selectedPeriod];
-  
+
   // Sort data according to user's preferred order
-  const orderedData = platformOrder.map(platform => 
+  const orderedData = platformOrder.map(platform =>
     currentData.find(data => data.platform === platform)!
   ).filter(Boolean);
-  
+
   // Calculate overall growth
   const totalChange = orderedData.reduce((sum, platform) => sum + platform.change, 0);
   const totalFollowers = orderedData.reduce((sum, platform) => {
-    const followers = parseFloat(platform.followers.replace(/[KM]/g, '')) * 
+    const followers = parseFloat(platform.followers.replace(/[KM]/g, '')) *
       (platform.followers.includes('M') ? 1000000 : platform.followers.includes('K') ? 1000 : 1);
     return sum + followers;
   }, 0);
@@ -493,7 +493,7 @@ export default function FollowersActivityWidget() {
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>, targetPlatform: Platform) => {
     e.preventDefault();
-    
+
     if (!draggedItem || draggedItem === targetPlatform) {
       setDraggedItem(null);
       setDragOverItem(null);
@@ -503,11 +503,11 @@ export default function FollowersActivityWidget() {
     const newOrder = [...platformOrder];
     const draggedIndex = newOrder.indexOf(draggedItem);
     const targetIndex = newOrder.indexOf(targetPlatform);
-    
+
     // Remove dragged item and insert at target position
     newOrder.splice(draggedIndex, 1);
     newOrder.splice(targetIndex, 0, draggedItem);
-    
+
     setPlatformOrder(newOrder);
     setDraggedItem(null);
     setDragOverItem(null);
@@ -521,7 +521,7 @@ export default function FollowersActivityWidget() {
   const handleMCInsight = (platform: Platform, insightType: keyof MCTooltipData) => {
     const insight = mcInsights[platform][insightType];
     const platformLabel = orderedData.find(p => p.platform === platform)?.label || platform;
-    
+
     // Send the insight to the chat
     addMCMessage(`${platformLabel} - ${insight}`);
     setActiveTooltip(null);
@@ -575,59 +575,53 @@ export default function FollowersActivityWidget() {
       <div className="relative mb-3">
         <div className="glass-tabs p-1 flex relative">
           {/* Sliding background */}
-          <div 
+          <div
             className="absolute top-1 bottom-1 bg-white/10 rounded-full transition-all duration-300 ease-out"
             style={{
               left: selectedPeriod === 'day' ? '4px' : selectedPeriod === 'week' ? '33.33%' : '66.66%',
               width: selectedPeriod === 'day' ? 'calc(33.33% - 4px)' : selectedPeriod === 'week' ? '33.33%' : 'calc(33.33% - 4px)',
             }}
           />
-          
+
           {/* Tab buttons */}
-          <button 
+          <button
             onClick={() => setSelectedPeriod('day')}
-            className={`relative z-10 text-sm px-4 py-2 flex-1 transition-colors duration-200 ${
-              selectedPeriod === 'day' ? 'text-foreground font-medium' : 'text-muted-foreground'
-            }`}
+            className={`relative z-10 text-sm px-4 py-2 flex-1 transition-colors duration-200 ${selectedPeriod === 'day' ? 'text-foreground font-medium' : 'text-muted-foreground'
+              }`}
           >
             Day
           </button>
-          <button 
+          <button
             onClick={() => setSelectedPeriod('week')}
-            className={`relative z-10 text-sm px-4 py-2 flex-1 transition-colors duration-200 ${
-              selectedPeriod === 'week' ? 'text-foreground font-medium' : 'text-muted-foreground'
-            }`}
+            className={`relative z-10 text-sm px-4 py-2 flex-1 transition-colors duration-200 ${selectedPeriod === 'week' ? 'text-foreground font-medium' : 'text-muted-foreground'
+              }`}
           >
             Week
           </button>
-          <button 
+          <button
             onClick={() => setSelectedPeriod('month')}
-            className={`relative z-10 text-sm px-4 py-2 flex-1 transition-colors duration-200 ${
-              selectedPeriod === 'month' ? 'text-foreground font-medium' : 'text-muted-foreground'
-            }`}
+            className={`relative z-10 text-sm px-4 py-2 flex-1 transition-colors duration-200 ${selectedPeriod === 'month' ? 'text-foreground font-medium' : 'text-muted-foreground'
+              }`}
           >
             Month
           </button>
         </div>
       </div>
-      
+
       {/* Date range */}
       <div className="text-muted-foreground text-xs w-full mb-4">
         {getDateRange(selectedPeriod)}
       </div>
-      
+
       {/* Platform list - taking up remaining space */}
       <div className="flex-1 flex flex-col justify-between min-h-0">
         {orderedData.map((platform, index) => (
-          <div 
-            key={platform.platform} 
-            className={`flex items-center justify-between py-4 transition-all duration-200 ${
-              draggedItem === platform.platform ? 'opacity-50 scale-95' : ''
-            } ${
-              dragOverItem === platform.platform ? 'transform translate-y-[-2px] bg-gray-800/20' : ''
-            } ${
-              index < orderedData.length - 1 ? 'border-b border-gray-800/30' : ''
-            }`}
+          <div
+            key={platform.platform}
+            className={`flex items-center justify-between py-4 transition-all duration-200 ${draggedItem === platform.platform ? 'opacity-50 scale-95' : ''
+              } ${dragOverItem === platform.platform ? 'transform translate-y-[-2px] bg-gray-800/20' : ''
+              } ${index < orderedData.length - 1 ? 'border-b border-gray-800/30' : ''
+              }`}
             onDragOver={(e) => handleDragOver(e, platform.platform)}
             onDragLeave={handleDragLeave}
             onDrop={(e) => handleDrop(e, platform.platform)}
@@ -637,13 +631,13 @@ export default function FollowersActivityWidget() {
               <div className="w-10 h-10 bg-gray-800/50 rounded-full flex items-center justify-center border border-gray-700/50">
                 {platform.icon}
               </div>
-              
+
               {/* Platform info */}
               <div>
                 <div className="text-foreground font-medium text-base">{platform.label}</div>
               </div>
             </div>
-            
+
             {/* Center section with mini chart */}
             <div className="flex items-center gap-6">
               {/* Mini line chart */}
@@ -652,16 +646,16 @@ export default function FollowersActivityWidget() {
                   <LineChart data={platform.data.map((value, i) => ({ value, index: i }))}>
                     <defs>
                       <filter id={`glow-${platform.platform}`} x="-50%" y="-50%" width="200%" height="200%">
-                        <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-                        <feMerge> 
-                          <feMergeNode in="coloredBlur"/>
-                          <feMergeNode in="SourceGraphic"/>
+                        <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+                        <feMerge>
+                          <feMergeNode in="coloredBlur" />
+                          <feMergeNode in="SourceGraphic" />
                         </feMerge>
                       </filter>
                     </defs>
-                    <Line 
-                      type="monotone" 
-                      dataKey="value" 
+                    <Line
+                      type="monotone"
+                      dataKey="value"
                       stroke={getTrendColor(platform.trend)}
                       strokeWidth={3}
                       dot={false}
@@ -671,7 +665,7 @@ export default function FollowersActivityWidget() {
                   </LineChart>
                 </ResponsiveContainer>
               </div>
-              
+
               {/* Changes data */}
               <div className="text-right min-w-[70px]">
                 <div className="text-foreground text-base font-medium">{platform.followers}</div>
@@ -679,17 +673,17 @@ export default function FollowersActivityWidget() {
                   {platform.changeFormatted}
                 </div>
               </div>
-              
+
               {/* MC Button with tooltip */}
               <div className="relative">
-                <button 
+                <button
                   onClick={() => setActiveTooltip(activeTooltip === platform.platform ? null : platform.platform)}
                   className="bg-gray-800/50 hover:bg-gray-700/50 text-white text-sm px-4 py-2 rounded-full border border-gray-600/50 flex items-center gap-1.5 transition-all duration-200 hover:shadow-[0_0_20px_rgba(3,255,150,0.4)] hover:border-[#03FF96]/50"
                 >
                   <Sparkles className="w-3.5 h-3.5" />
                   MC
                 </button>
-                
+
                 {/* MC Tooltip */}
                 {activeTooltip === platform.platform && (
                   <div className="absolute right-0 top-10 bg-gray-900/95 border border-gray-700 rounded-lg p-3 w-48 z-50">
@@ -716,9 +710,9 @@ export default function FollowersActivityWidget() {
                   </div>
                 )}
               </div>
-              
+
               {/* Drag handle */}
-              <button 
+              <button
                 draggable
                 onDragStart={(e) => handleDragStart(e, platform.platform)}
                 onDragEnd={handleDragEnd}

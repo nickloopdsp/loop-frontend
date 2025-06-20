@@ -6,7 +6,7 @@ import { useState, useEffect, useRef } from "react";
 import { ChatMessage } from "@/types";
 import { mockArtistProfile } from "@/lib/mockData";
 import { useAIChat } from "@/hooks/useAIChat";
-import { useArtist } from "@/contexts/ArtistContext";
+import useArtistStore from "@/stores/useArtistStore";
 
 interface MCChatDockProps {
   isOpen: boolean;
@@ -22,7 +22,7 @@ export default function MCChatDock({ isOpen, onClose }: MCChatDockProps) {
   const scrollTimeoutRef = useRef<NodeJS.Timeout>();
 
   const { sendMessage } = useAIChat();
-  const { selectedArtist, artistStats } = useArtist();
+  const { selectedArtist, artistStats } = useArtistStore();
 
   // Initialize with a welcome message
   useEffect(() => {

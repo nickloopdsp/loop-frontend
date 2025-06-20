@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { X, Sparkles, Loader2, Send } from 'lucide-react';
-import { useMode } from '@/contexts/ModeContext';
+import useModeStore from '@/stores/useModeStore';
 import { useAIChat } from '@/hooks/useAIChat';
-import { useArtist } from '@/contexts/ArtistContext';
+import useArtistStore from '@/stores/useArtistStore';
 
 interface MCAssistTooltipProps {
   isVisible: boolean;
@@ -11,31 +11,31 @@ interface MCAssistTooltipProps {
   onLayoutRecommendation: (layout: string) => void;
 }
 
-export default function MCAssistTooltip({ 
-  isVisible, 
-  onClose, 
-  onLayoutRecommendation 
+export default function MCAssistTooltip({
+  isVisible,
+  onClose,
+  onLayoutRecommendation
 }: MCAssistTooltipProps) {
   const [userInput, setUserInput] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [recommendation, setRecommendation] = useState('');
   const [hasUserInteracted, setHasUserInteracted] = useState(false);
-  const { setMode } = useMode();
+  const { setMode } = useModeStore();
   const { sendMessage } = useAIChat();
-  const { selectedArtist } = useArtist();
+  const { selectedArtist } = useArtistStore();
 
   // Handle Escape key to close tooltip
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         console.log('Escape key pressed!', { hasUserInteracted, userInput: userInput.trim() }); // Debug log
-        
+
         // If user hasn't interacted or typed anything, revert to standard mode
         if (!hasUserInteracted && userInput.trim().length === 0) {
           console.log('No user interaction detected, reverting to standard mode');
           setMode('standard');
         }
-        
+
         onClose();
       }
     };
@@ -61,7 +61,7 @@ export default function MCAssistTooltip({
     if (!userInput.trim() || isProcessing) return;
 
     setIsProcessing(true);
-    
+
     try {
       const prompt = `As a music industry AI assistant, analyze the following artist needs and recommend the best dashboard layout mode:
 
@@ -92,7 +92,7 @@ Format: "Mode: [MODE_NAME] | Explanation: [EXPLANATION] | Focus: [KEY_WIDGETS]"`
 
       if (response) {
         setRecommendation(response);
-        
+
         // Extract mode from AI response
         const modeMatch = response.match(/Mode:\s*(\w+)/i);
         if (modeMatch) {
@@ -100,13 +100,13 @@ Format: "Mode: [MODE_NAME] | Explanation: [EXPLANATION] | Focus: [KEY_WIDGETS]"`
           // Map AI response to actual mode IDs
           const modeMapping: Record<string, string> = {
             'standard': 'standard',
-            'recording': 'recording', 
+            'recording': 'recording',
             'touring': 'touring',
             'promotion': 'promotion',
             'inspiration': 'inspiration',
             'strategy': 'strategy'
           };
-          
+
           const mappedMode = modeMapping[recommendedMode];
           if (mappedMode) {
             onLayoutRecommendation(mappedMode);
@@ -128,12 +128,12 @@ Format: "Mode: [MODE_NAME] | Explanation: [EXPLANATION] | Focus: [KEY_WIDGETS]"`
       const modeMapping: Record<string, any> = {
         'standard': 'standard',
         'recording': 'recording',
-        'touring': 'touring', 
+        'touring': 'touring',
         'promotion': 'promotion',
         'inspiration': 'inspiration',
         'strategy': 'strategy'
       };
-      
+
       const mappedMode = modeMapping[recommendedMode];
       if (mappedMode) {
         setMode(mappedMode);
@@ -160,13 +160,13 @@ Format: "Mode: [MODE_NAME] | Explanation: [EXPLANATION] | Focus: [KEY_WIDGETS]"`
               e.preventDefault();
               e.stopPropagation();
               console.log('Close button clicked!', { hasUserInteracted, userInput: userInput.trim() }); // Debug log
-              
+
               // If user hasn't interacted or typed anything, revert to standard mode
               if (!hasUserInteracted && userInput.trim().length === 0) {
                 console.log('No user interaction detected, reverting to standard mode');
                 setMode('standard');
               }
-              
+
               onClose();
             }}
             className="text-gray-400 hover:text-white transition-colors p-1 rounded-md hover:bg-white/10"
@@ -198,8 +198,8 @@ Format: "Mode: [MODE_NAME] | Explanation: [EXPLANATION] | Focus: [KEY_WIDGETS]"`
               className="w-full h-20 px-3 py-2 rounded-xl glass-input text-white text-xs placeholder-gray-400 resize-none"
               disabled={isProcessing}
             />
-            
-            <Button 
+
+            <Button
               type="submit"
               disabled={!userInput.trim() || isProcessing}
               className="w-full bg-green-600 hover:bg-green-700 text-white text-xs py-2 rounded-xl font-medium disabled:opacity-50"
@@ -228,7 +228,7 @@ Format: "Mode: [MODE_NAME] | Explanation: [EXPLANATION] | Focus: [KEY_WIDGETS]"`
                   <div className="text-gray-300 leading-relaxed">{recommendation}</div>
                 </div>
               </div>
-              
+
               <Button
                 onClick={handleApplyRecommendation}
                 className="w-full mt-3 bg-blue-600 hover:bg-blue-700 text-white text-xs py-2 rounded-xl font-medium"
@@ -239,7 +239,7 @@ Format: "Mode: [MODE_NAME] | Explanation: [EXPLANATION] | Focus: [KEY_WIDGETS]"`
           )}
         </div>
       </div>
-      
+
       {/* Pointer Arrow */}
       <div className="absolute -bottom-2 left-8 w-4 h-4 bg-white/10 border-r border-b border-white/20 transform rotate-45 backdrop-blur-md"></div>
     </div>

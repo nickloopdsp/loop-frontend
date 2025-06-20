@@ -3,16 +3,16 @@ import { useState, useRef, useEffect } from "react";
 import { Sparkles, Loader2 } from "lucide-react";
 import { useChat } from "@/contexts/ChatContext";
 import { useAIChat } from "@/hooks/useAIChat";
-import { useArtist } from "@/contexts/ArtistContext";
+import useArtistStore from "@/stores/useArtistStore";
 
 export default function MCChatWidget() {
   const { messages, addMessage } = useChat();
   const [userMessage, setUserMessage] = useState("");
   const [isThinking, setIsThinking] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  
+
   const { sendMessage } = useAIChat();
-  const { selectedArtist, artistStats } = useArtist();
+  const { selectedArtist, artistStats } = useArtistStore();
 
   // Extract first name from artist name
   const getFirstName = (fullName: string | undefined) => {
@@ -44,7 +44,7 @@ export default function MCChatWidget() {
       sender: "user",
       message: userMessage.trim(),
     });
-    
+
     const currentMessage = userMessage.trim();
     setUserMessage("");
     setIsThinking(true);
@@ -98,13 +98,13 @@ export default function MCChatWidget() {
       </div>
 
       {/* Chat Messages - Fixed Height with Scroll */}
-      <div 
-        className="w-full overflow-y-auto flex-1" 
+      <div
+        className="w-full overflow-y-auto flex-1"
         style={{ maxHeight: 'calc(100% - 180px)', overflowY: 'auto' }}
       >
         <div className="space-y-3 pr-2">
           {messages.map((message) => (
-            <div 
+            <div
               key={message.id}
               className={`flex items-start gap-3 ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
             >
@@ -113,25 +113,25 @@ export default function MCChatWidget() {
                   <Sparkles className="w-4 h-4 text-yellow-400" />
                 </div>
               )}
-              
-              <div 
+
+              <div
                 className={`max-w-xs rounded-2xl px-4 py-3 glass-item text-foreground`}
               >
                 <p className="text-sm leading-relaxed">{message.message}</p>
               </div>
-              
+
               {message.sender === 'user' && (
                 <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
-                  <img 
+                  <img
                     src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=64&h=64"
-                    alt="Your profile" 
-                    className="w-full h-full object-cover" 
+                    alt="Your profile"
+                    className="w-full h-full object-cover"
                   />
                 </div>
               )}
             </div>
           ))}
-          
+
           {/* Thinking animation */}
           {isThinking && (
             <div className="flex items-start gap-3">
@@ -144,7 +144,7 @@ export default function MCChatWidget() {
               </div>
             </div>
           )}
-          
+
           <div ref={messagesEndRef} />
         </div>
       </div>
@@ -160,7 +160,7 @@ export default function MCChatWidget() {
           className="flex-1 rounded-2xl px-4 py-3 glass-input text-foreground text-sm placeholder-muted-foreground"
           disabled={isThinking}
         />
-        <Button 
+        <Button
           type="submit"
           disabled={!userMessage.trim() || isThinking}
           className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-2xl font-medium disabled:opacity-50 disabled:cursor-not-allowed"

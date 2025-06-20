@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Bell, Sun, Moon, Music } from "lucide-react";
 import { useTheme } from "@/providers/ThemeProvider";
 import { ArtistSelector } from "@/components/ArtistSelector";
-import { useArtist } from "@/contexts/ArtistContext";
+import useArtistStore from "@/stores/useArtistStore";
 import { useState, useRef } from "react";
 import ModeSelector from "@/components/ModeSelector";
 
@@ -12,7 +12,7 @@ interface TopBarProps {
 
 export default function TopBar({ onOpenChat }: TopBarProps) {
   const { theme, setTheme } = useTheme();
-  const { selectedArtist } = useArtist();
+  const { selectedArtist } = useArtistStore();
   const [isArtistSelectorOpen, setIsArtistSelectorOpen] = useState(false);
   const avatarRef = useRef<HTMLButtonElement>(null);
 
@@ -21,14 +21,14 @@ export default function TopBar({ onOpenChat }: TopBarProps) {
   };
 
   return (
-    <header 
-      className="px-6 py-4 flex-shrink-0" 
+    <header
+      className="px-6 py-4 flex-shrink-0"
       role="banner"
     >
       <div className="flex items-center justify-between">
         {/* Mode Selector */}
         <ModeSelector />
-        
+
         <div className="flex items-center space-x-4">
           {/* Theme Toggle Button */}
           <Button
@@ -53,7 +53,7 @@ export default function TopBar({ onOpenChat }: TopBarProps) {
           >
             <Bell className="w-5 h-5" />
           </Button>
-          
+
           {/* User Avatar - shows selected artist or default */}
           <button
             ref={avatarRef}
@@ -61,15 +61,15 @@ export default function TopBar({ onOpenChat }: TopBarProps) {
             className="w-10 h-10 rounded-full overflow-hidden bg-white/10 hover:ring-2 hover:ring-white/30 transition-all cursor-pointer"
           >
             {selectedArtist?.image || selectedArtist?.imageUrl ? (
-            <img 
-                src={selectedArtist.image || selectedArtist.imageUrl} 
+              <img
+                src={selectedArtist.image || selectedArtist.imageUrl}
                 alt={selectedArtist.name}
-              className="w-full h-full object-cover"
-            />
+                className="w-full h-full object-cover"
+              />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-500 to-blue-500">
                 <Music className="w-5 h-5 text-white" />
-          </div>
+              </div>
             )}
           </button>
 

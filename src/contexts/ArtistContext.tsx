@@ -1,35 +1,6 @@
-import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import React, { createContext, useState, ReactNode, useEffect } from 'react';
+import { Artist, ArtistStats } from '@/stores/useArtistStore';
 
-export interface Artist {
-  uuid: string;
-  name: string;
-  image?: string;
-  imageUrl?: string;
-  slug?: string;
-  verified?: boolean;
-  genres?: string[];
-  country?: string;
-}
-
-export interface ArtistStats {
-  spotify?: {
-    followers: number;
-    monthlyListeners: number;
-    popularity: number;
-  };
-  instagram?: {
-    followers: number;
-    engagement: number;
-  };
-  tiktok?: {
-    followers: number;
-    likes: number;
-  };
-  youtube?: {
-    subscribers: number;
-    views: number;
-  };
-}
 
 interface ArtistContextType {
   selectedArtist: Artist | null;
@@ -43,13 +14,7 @@ interface ArtistContextType {
 
 const ArtistContext = createContext<ArtistContextType | undefined>(undefined);
 
-export const useArtist = () => {
-  const context = useContext(ArtistContext);
-  if (!context) {
-    throw new Error('useArtist must be used within an ArtistProvider');
-  }
-  return context;
-};
+
 
 interface ArtistProviderProps {
   children: ReactNode;

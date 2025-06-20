@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { TrendingUp, Loader2, Music } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useArtist } from "@/contexts/ArtistContext";
+import useArtistStore from "@/stores/useArtistStore";
 import { soundchartsClient } from "@/lib/soundcharts";
 
 interface ChartPosition {
@@ -16,7 +16,7 @@ interface ChartPosition {
 }
 
 export default function TrendTracker() {
-  const { selectedArtist } = useArtist();
+  const { selectedArtist } = useArtistStore();
   const [chartPositions, setChartPositions] = useState<ChartPosition[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -28,12 +28,12 @@ export default function TrendTracker() {
 
   const fetchChartData = async () => {
     if (!selectedArtist) return;
-    
+
     setIsLoading(true);
     try {
       // Try to fetch chart positions
       const response = await soundchartsClient.getArtistStats(selectedArtist.uuid);
-      
+
       if (response && response.items && response.items.length > 0) {
         // Transform real chart data
         const positions = response.items.slice(0, 5).map((item: any) => ({
@@ -43,9 +43,9 @@ export default function TrendTracker() {
           previousPosition: item.previousPosition,
           peak: item.peak,
           weeksOnChart: item.weeksOnChart,
-          trend: item.position < (item.previousPosition || item.position) ? 'up' : 
-                 item.position > (item.previousPosition || item.position) ? 'down' : 
-                 item.previousPosition ? 'stable' : 'new'
+          trend: item.position < (item.previousPosition || item.position) ? 'up' :
+            item.position > (item.previousPosition || item.position) ? 'down' :
+              item.previousPosition ? 'stable' : 'new'
         }));
         setChartPositions(positions);
       } else {
@@ -90,7 +90,7 @@ export default function TrendTracker() {
         trend: 'new'
       }
     ];
-    
+
     // Update trends based on positions
     mockCharts.forEach(chart => {
       if (!chart.previousPosition) {
@@ -103,7 +103,7 @@ export default function TrendTracker() {
         chart.trend = 'stable';
       }
     });
-    
+
     setChartPositions(mockCharts);
   };
 
@@ -170,12 +170,12 @@ export default function TrendTracker() {
           </div>
         </div>
       </CardHeader>
-      
+
       <CardContent className="p-6 pt-0">
         <div className="space-y-4">
           {chartPositions.length > 0 ? (
             chartPositions.slice(0, 3).map((chart, index) => (
-              <div 
+              <div
                 key={`${chart.platform}-${chart.chartName}`}
                 className="flex items-center space-x-3 p-3 bg-muted/50 rounded-lg hover:bg-muted transition-colors cursor-pointer"
               >
@@ -201,10 +201,10 @@ export default function TrendTracker() {
             </div>
           )}
         </div>
-        
+
         {chartPositions.length > 0 && (
-          <Button 
-            variant="secondary" 
+          <Button
+            variant="secondary"
             className="w-full mt-4"
           >
             View All Charts

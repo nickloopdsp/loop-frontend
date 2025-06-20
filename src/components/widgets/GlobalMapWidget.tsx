@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import Globe from 'react-globe.gl';
 import { Plus, Minus, Loader2, Globe as GlobeIcon } from "lucide-react";
 import countries from '@/data/globe.json';
-import { useArtist } from '@/contexts/ArtistContext';
+import useArtistStore from "@/stores/useArtistStore";
 import { soundchartsClient, ArtistEvent } from '@/lib/soundcharts';
 
 type FilterType = 'followers' | 'streams' | 'concerts';
@@ -67,7 +67,7 @@ const cityCoordinates: Record<string, { lat: number; lng: number; country: strin
   'Boston': { lat: 42.3601, lng: -71.0589, country: 'United States' },
   'Atlanta': { lat: 33.7490, lng: -84.3880, country: 'United States' },
   'Denver': { lat: 39.7392, lng: -104.9903, country: 'United States' },
-  
+
   // United Kingdom
   'London': { lat: 51.5074, lng: -0.1278, country: 'United Kingdom' },
   'Manchester': { lat: 53.4808, lng: -2.2426, country: 'United Kingdom' },
@@ -75,19 +75,19 @@ const cityCoordinates: Record<string, { lat: number; lng: number; country: strin
   'Glasgow': { lat: 55.8642, lng: -4.2518, country: 'United Kingdom' },
   'Liverpool': { lat: 53.4084, lng: -2.9916, country: 'United Kingdom' },
   'Bristol': { lat: 51.4545, lng: -2.5879, country: 'United Kingdom' },
-  
+
   // Canada
   'Toronto': { lat: 43.6532, lng: -79.3832, country: 'Canada' },
   'Vancouver': { lat: 49.2827, lng: -123.1207, country: 'Canada' },
   'Montreal': { lat: 45.5017, lng: -73.5673, country: 'Canada' },
   'Calgary': { lat: 51.0447, lng: -114.0719, country: 'Canada' },
-  
+
   // Australia
   'Sydney': { lat: -33.8688, lng: 151.2093, country: 'Australia' },
   'Melbourne': { lat: -37.8136, lng: 144.9631, country: 'Australia' },
   'Brisbane': { lat: -27.4698, lng: 153.0251, country: 'Australia' },
   'Perth': { lat: -31.9505, lng: 115.8605, country: 'Australia' },
-  
+
   // Europe
   'Paris': { lat: 48.8566, lng: 2.3522, country: 'France' },
   'Berlin': { lat: 52.5200, lng: 13.4050, country: 'Germany' },
@@ -101,7 +101,7 @@ const cityCoordinates: Record<string, { lat: number; lng: number; country: strin
   'Milan': { lat: 45.4642, lng: 9.1900, country: 'Italy' },
   'Vienna': { lat: 48.2082, lng: 16.3738, country: 'Austria' },
   'Zurich': { lat: 47.3769, lng: 8.5417, country: 'Switzerland' },
-  
+
   // Asia
   'Tokyo': { lat: 35.6762, lng: 139.6503, country: 'Japan' },
   'Osaka': { lat: 34.6937, lng: 135.5023, country: 'Japan' },
@@ -111,7 +111,7 @@ const cityCoordinates: Record<string, { lat: number; lng: number; country: strin
   'Mumbai': { lat: 19.0760, lng: 72.8777, country: 'India' },
   'Delhi': { lat: 28.7041, lng: 77.1025, country: 'India' },
   'Bangkok': { lat: 13.7563, lng: 100.5018, country: 'Thailand' },
-  
+
   // South America
   'São Paulo': { lat: -23.5505, lng: -46.6333, country: 'Brazil' },
   'Rio de Janeiro': { lat: -22.9068, lng: -43.1729, country: 'Brazil' },
@@ -119,7 +119,7 @@ const cityCoordinates: Record<string, { lat: number; lng: number; country: strin
   'Santiago': { lat: -33.4489, lng: -70.6693, country: 'Chile' },
   'Bogotá': { lat: 4.7110, lng: -74.0721, country: 'Colombia' },
   'Mexico City': { lat: 19.4326, lng: -99.1332, country: 'Mexico' },
-  
+
   // Africa & Middle East
   'Cape Town': { lat: -33.9249, lng: 18.4241, country: 'South Africa' },
   'Dubai': { lat: 25.2048, lng: 55.2708, country: 'UAE' },
@@ -127,7 +127,7 @@ const cityCoordinates: Record<string, { lat: number; lng: number; country: strin
 };
 
 const GlobalMapWidget = () => {
-  const { selectedArtist, artistStats } = useArtist();
+  const { selectedArtist, artistStats } = useArtistStore();
   const [activeFilter, setActiveFilter] = useState<FilterType>('followers');
   const [zoomLevel, setZoomLevel] = useState(2.5);
   const [hoveredPoint, setHoveredPoint] = useState<FanLocation | null>(null);
@@ -153,7 +153,7 @@ const GlobalMapWidget = () => {
 
   const fetchEvents = async () => {
     if (!selectedArtist) return;
-    
+
     try {
       const artistEvents = await soundchartsClient.getArtistEvents(selectedArtist.uuid);
       setEvents(artistEvents);
@@ -243,7 +243,7 @@ const GlobalMapWidget = () => {
       console.log(`Found exact coordinates for ${city}:`, cityCoords);
       return { lat: cityCoords.lat, lng: cityCoords.lng, country: cityCoords.country };
     }
-    
+
     // Fallback to country coordinates with slight offset
     const countryCode = getCountryCode(country);
     const countryCoords = countryCoordinates[countryCode];
@@ -256,14 +256,14 @@ const GlobalMapWidget = () => {
       }
       const offsetLat = ((hash % 1000) / 1000 - 0.5) * 4;
       const offsetLng = (((hash >> 16) % 1000) / 1000 - 0.5) * 4;
-      
+
       return {
         lat: countryCoords.lat + offsetLat,
         lng: countryCoords.lng + offsetLng,
         country: countryCoords.region
       };
     }
-    
+
     // Final fallback to a default location
     console.log(`No coordinates found for ${city}, ${country}, using default`);
     return { lat: 0, lng: 0, country: 'Unknown' };
@@ -299,19 +299,19 @@ const GlobalMapWidget = () => {
 
   const fetchAudienceGeography = async () => {
     if (!selectedArtist) return;
-    
+
     setIsLoading(true);
     try {
       // Try to get audience data with geographic breakdown
       const response = await soundchartsClient.getArtistAudience(selectedArtist.uuid, 'spotify');
-      
+
       // Generate locations based on artist popularity and stats
       const locations: FanLocation[] = [];
       let id = 0;
-      
+
       // Use artist stats to estimate geographic distribution
       const totalFollowers = artistStats?.spotify?.followers || 1000000;
-      
+
       // Typical distribution for popular artists
       const distribution = [
         { country: 'US', percentage: 0.35 },
@@ -377,7 +377,7 @@ const GlobalMapWidget = () => {
         }
       });
 
-            // Always use mock concert data for now to ensure proper coordinates
+      // Always use mock concert data for now to ensure proper coordinates
       console.log('Using mock concert data for debugging');
       const mockConcertData = [
         { city: 'New York', venue: 'Madison Square Garden', date: '2024-07-15', name: 'Summer Tour', country: 'United States' },
@@ -439,13 +439,13 @@ const GlobalMapWidget = () => {
     const handleMouseMove = (e: MouseEvent) => {
       if (containerRef.current) {
         const rect = containerRef.current.getBoundingClientRect();
-        setMousePos({ 
-          x: e.clientX - rect.left, 
-          y: e.clientY - rect.top 
+        setMousePos({
+          x: e.clientX - rect.left,
+          y: e.clientY - rect.top
         });
       }
     };
-    
+
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
@@ -501,7 +501,7 @@ const GlobalMapWidget = () => {
       const controls = globeRef.current.controls();
       controls.autoRotate = false;
       controls.enableZoom = false;
-      
+
       // Set initial position - centered view
       globeRef.current.pointOfView({ lat: 0, lng: 0, altitude: zoomLevel });
     }
@@ -515,7 +515,7 @@ const GlobalMapWidget = () => {
         lng: 0,
         altitude: zoomLevel
       }, 0);
-      
+
       // Try to access the globe's Three.js scene and make the globe opaque and dark
       setTimeout(() => {
         if (globeRef.current && globeRef.current.scene) {
@@ -524,7 +524,7 @@ const GlobalMapWidget = () => {
             if (obj.type === 'Mesh' && obj.material) {
               const THREE = (window as any).THREE;
               if (!THREE) return;
-              
+
               // Check if this is the main globe mesh
               if (obj.geometry && obj.geometry.type === 'SphereGeometry') {
                 // Create a solid black material for the globe
@@ -592,8 +592,8 @@ const GlobalMapWidget = () => {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      month: 'short', 
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
       day: 'numeric',
       year: 'numeric'
     });
@@ -627,31 +627,28 @@ const GlobalMapWidget = () => {
       <div className="absolute top-4 right-20 z-10 flex gap-2">
         <button
           onClick={() => setActiveFilter('followers')}
-          className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
-            activeFilter === 'followers'
+          className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${activeFilter === 'followers'
               ? 'bg-[#03FF96] text-black'
               : 'bg-white/[0.05] text-white/60 hover:bg-white/[0.08]'
-          }`}
+            }`}
         >
           Followers
         </button>
         <button
           onClick={() => setActiveFilter('streams')}
-          className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
-            activeFilter === 'streams'
+          className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${activeFilter === 'streams'
               ? 'bg-purple-500 text-white'
               : 'bg-white/[0.05] text-white/60 hover:bg-white/[0.08]'
-          }`}
+            }`}
         >
           Streams
         </button>
         <button
           onClick={() => setActiveFilter('concerts')}
-          className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
-            activeFilter === 'concerts'
+          className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${activeFilter === 'concerts'
               ? 'bg-orange-500 text-white'
               : 'bg-white/[0.05] text-white/60 hover:bg-white/[0.08]'
-          }`}
+            }`}
         >
           Concerts
         </button>
@@ -659,7 +656,7 @@ const GlobalMapWidget = () => {
 
       {/* Tooltip */}
       {hoveredPoint && (
-        <div 
+        <div
           className="absolute z-50 bg-black/90 backdrop-blur-md rounded-lg p-3 border border-white/10 pointer-events-none"
           style={{
             left: Math.min(Math.max(mousePos.x, 100), dimensions.width - 250),
@@ -688,8 +685,8 @@ const GlobalMapWidget = () => {
       )}
 
       {/* Globe Container with dark background */}
-      <div 
-        ref={containerRef} 
+      <div
+        ref={containerRef}
         className="w-full h-full bg-[#0a0a0a] flex items-center justify-center relative"
         style={{ minHeight: '300px', cursor: 'grab' }}
       >
@@ -720,9 +717,9 @@ const GlobalMapWidget = () => {
           }}
           pointColor={d => {
             const location = d as FanLocation;
-            const baseColor = activeFilter === 'followers' ? '#03FF96' : 
-                            activeFilter === 'streams' ? '#a855f7' : 
-                            '#f97316';
+            const baseColor = activeFilter === 'followers' ? '#03FF96' :
+              activeFilter === 'streams' ? '#a855f7' :
+                '#f97316';
             return location.isPrimary ? baseColor : baseColor + '80';
           }}
           pointsMerge={false}
@@ -742,7 +739,7 @@ const GlobalMapWidget = () => {
           onPointHover={(point: object | null) => {
             setHoveredPoint(point as FanLocation | null);
           }}
-          onPointClick={() => {}}
+          onPointClick={() => { }}
           animateIn={true}
           waitForGlobeReady={true}
           rendererConfig={{
