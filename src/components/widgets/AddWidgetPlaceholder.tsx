@@ -1,6 +1,6 @@
 import React from 'react';
 import { Plus } from 'lucide-react';
-import WidgetSelector from '../../../components/dashboard/WidgetSelector';
+import { WidgetSelector } from '@/components/widgets/WidgetSelector';
 
 interface AddWidgetPlaceholderProps {
   onAddWidget?: (widgetType: string) => void;

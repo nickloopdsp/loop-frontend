@@ -3,7 +3,7 @@ import { getWidgetComponent } from "@/lib/widgetRegistry";
 import { useMemo, useState, useEffect } from "react";
 import useModeStore from "@/stores/useModeStore";
 import MCAssistTooltip from "@/components/MCAssistTooltip";
-import AddWidgetPlaceholder from "./AddWidgetPlaceholder";
+import AddWidgetPlaceholder from "@/components/widgets/AddWidgetPlaceholder";
 
 interface DashboardGridProps {
   layout: WidgetData[];

@@ -11,9 +11,8 @@ import {
   SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { mockArtistProfile } from "@/lib/mockData";
 import { useEffect } from "react";
-import WidgetSelector from "../components/dashboard/WidgetSelector";
+import { WidgetSelector } from "@/components/widgets/WidgetSelector";
 import CleanupButton from "./components/CleanupButton";
 import { Plus, RotateCcw } from "lucide-react";
 import { DashboardIcon, DiscoverIcon, SocialsIcon, MCIcon, LoopIcon } from "@/components/icons";

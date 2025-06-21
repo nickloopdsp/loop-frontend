@@ -7,13 +7,13 @@ import { Badge } from '@/components/ui/badge';
 import { widgetRegistry, WidgetConfig } from '@/lib/widgetRegistry';
 import { Plus } from 'lucide-react';
 
-interface WidgetSelectorProps {
+export interface IWidgetSelectorProps {
   onWidgetSelect?: (widgetType: string) => void;
   existingWidgets: string[];
   children?: React.ReactNode;
 }
 
-export default function WidgetSelector({ onWidgetSelect, existingWidgets, children }: WidgetSelectorProps) {
+export const WidgetSelector: React.FC<IWidgetSelectorProps> = ({ onWidgetSelect, existingWidgets, children }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const availableWidgets = Object.values(widgetRegistry).filter(
