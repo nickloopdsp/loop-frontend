@@ -49,23 +49,33 @@
    cd Loop
    ```
 
-2. **Install dependencies**
+2. **Configure private package access**
+   This project uses the private `@nickloopdsp/loop-sdk` package. The `.npmrc` file is already configured with the necessary authentication:
+
+   ```bash
+   @nickloopdsp:registry=https://npm.pkg.github.com
+   //npm.pkg.github.com/:_authToken={YOUR_CLASSIC_PAT_TOKEN}
+   ```
+
+   **Note**: The `_authToken` contains a GitHub Personal Access Token for accessing private packages. Keep this file secure and never commit it to version control.
+
+3. **Install dependencies**
    ```bash
    npm install
    ```
 
-3. **Set up environment variables**
+4. **Set up environment variables**
    ```bash
    cp .env.example .env
    # Configure your API keys for platform integrations
    ```
 
-4. **Run the development server**
+5. **Run the development server**
    ```bash
    npm run dev
    ```
 
-5. **Access the dashboard**
+6. **Access the dashboard**
    Open [http://localhost:3001](http://localhost:3001) in your browser
 
 ## 🎼 Dashboard Widgets
