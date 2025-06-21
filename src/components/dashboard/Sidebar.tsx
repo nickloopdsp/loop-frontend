@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { mockArtistProfile } from "@/lib/mockData";
-import { 
-  LayoutDashboard, 
-  BarChart3, 
-  Map, 
-  Calendar, 
+import {
+  LayoutDashboard,
+  BarChart3,
+  Map,
+  Calendar,
   TrendingUp,
   MessageCircle,
   MapPin,
@@ -35,7 +35,7 @@ const widgetItems = [
 
 export default function Sidebar() {
   return (
-    <aside 
+    <aside
       className="bg-sidebar-background border-r border-sidebar-border flex flex-col items-center"
       style={{
         display: 'flex',
@@ -46,7 +46,7 @@ export default function Sidebar() {
         gap: '64px',
         boxShadow: '14px 0px 48px 0px rgba(0, 0, 0, 0.15)'
       }}
-      role="navigation" 
+      role="navigation"
       aria-label="Main navigation"
     >
       {/* Logo */}
@@ -55,9 +55,9 @@ export default function Sidebar() {
           <span className="text-white font-bold text-sm">L</span>
         </div>
       </div>
-      
+
       {/* Navigation Menu */}
-      <nav 
+      <nav
         style={{
           display: 'flex',
           height: '766px',
@@ -72,11 +72,10 @@ export default function Sidebar() {
               <Button
                 variant={item.active ? "default" : "ghost"}
                 size="icon"
-                className={`w-12 h-12 p-0 ${
-                  item.active 
-                    ? "bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary/90" 
-                    : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-                }`}
+                className={`w-12 h-12 p-0 ${item.active
+                  ? "bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary/90"
+                  : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                  }`}
                 aria-current={item.active ? "page" : undefined}
                 title={item.label}
               >
@@ -86,13 +85,13 @@ export default function Sidebar() {
           ))}
         </ul>
       </nav>
-      
+
       {/* User Profile */}
       <div className="flex items-center justify-center">
-        <img 
+        <img
           src={mockArtistProfile.avatar}
-          alt="Artist profile" 
-          className="w-10 h-10 rounded-full" 
+          alt="Artist profile"
+          className="w-10 h-10 rounded-full"
         />
       </div>
     </aside>

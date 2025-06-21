@@ -1,7 +1,7 @@
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
-import AppSidebar from "./AppSidebar";
-import TopBar from "./TopBar";
-import DashboardGrid from "./DashboardGrid";
+import AppLayoutSidebar from "../../layouts/AppLayoutSidebar";
+import AppLayoutTopBar from "../../layouts/AppLayoutTopBar";
+import DashboardGrid from "../../pages/dashboard/components/DashboardGrid";
 import MCChatDock from "@/components/chat/MCChatDock";
 import { useState, useRef, useCallback } from "react";
 import { useDashboardLayout } from "@/hooks/useDashboardLayout";
@@ -155,7 +155,7 @@ export default function DashboardLayout() {
             : 'linear-gradient(180deg, #E8E8E8 0%, #D0D0D0 100%)'
         }}
       >
-        <AppSidebar
+        <AppLayoutSidebar
           onAddWidget={handleAddWidget}
           existingWidgets={layout.map(w => w.type)}
           onCleanupDuplicates={cleanupDuplicates}
@@ -164,7 +164,7 @@ export default function DashboardLayout() {
           hasCustomLayout={hasCustomLayout()}
         />
         <SidebarInset className="flex flex-col bg-transparent min-w-0 w-full">
-          <TopBar onOpenChat={handleOpenChat} />
+          <AppLayoutTopBar onOpenChat={handleOpenChat} />
           <main className="flex-1 overflow-auto p-6 w-full">
             <DashboardGrid
               layout={layout}

@@ -13,8 +13,8 @@ import {
 } from "@/components/ui/sidebar";
 import { mockArtistProfile } from "@/lib/mockData";
 import { useEffect } from "react";
-import WidgetSelector from "./WidgetSelector";
-import CleanupButton from "./CleanupButton";
+import WidgetSelector from "../components/dashboard/WidgetSelector";
+import CleanupButton from "./components/CleanupButton";
 import { Plus, RotateCcw } from "lucide-react";
 import { DashboardIcon, DiscoverIcon, SocialsIcon, MCIcon, LoopIcon } from "@/components/icons";
 
@@ -25,7 +25,7 @@ const navigationItems = [
   { icon: MCIcon, label: "MC", active: false },
 ];
 
-interface AppSidebarProps {
+interface AppLayoutSidebarProps {
   onAddWidget?: (widgetType: string) => void;
   existingWidgets?: string[];
   onCleanupDuplicates?: () => void;
@@ -34,7 +34,7 @@ interface AppSidebarProps {
   hasCustomLayout?: boolean;
 }
 
-export default function AppSidebar({ onAddWidget, existingWidgets = [], onCleanupDuplicates, onResetMode, currentMode, hasCustomLayout }: AppSidebarProps) {
+export default function AppLayoutSidebar({ onAddWidget, existingWidgets = [], onCleanupDuplicates, onResetMode, currentMode, hasCustomLayout }: AppLayoutSidebarProps) {
   const { state } = useSidebar();
   const isCollapsed = state === "collapsed";
 

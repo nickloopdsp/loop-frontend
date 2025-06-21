@@ -1,13 +1,15 @@
 
-import Dashboard from '@/pages/Dashboard';
-import NotFound from '@/pages/not-found';
+import { BaseLayout } from '@/layouts/BaseLayout';
+import Dashboard from '@/pages/dashboard/Dashboard';
+import NotFound from '@/pages/notfound/not-found';
 import { Routes, Route } from 'react-router-dom'
 export const AppRoutes = () => {
     return (
         <Routes>
-
-            <Route index element={<Dashboard />} />
-            <Route path="*" element={<NotFound />} />
+            <Route path="/" element={<BaseLayout />}>
+                <Route index element={<Dashboard />} />
+                <Route path="*" element={<NotFound />} />
+            </Route>
 
         </Routes>
     );

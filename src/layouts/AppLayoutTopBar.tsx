@@ -6,11 +6,11 @@ import useArtistStore from "@/stores/useArtistStore";
 import { useState, useRef } from "react";
 import ModeSelector from "@/components/ModeSelector";
 
-interface TopBarProps {
+interface AppLayoutTopBarProps {
   onOpenChat: () => void;
 }
 
-export default function TopBar({ onOpenChat }: TopBarProps) {
+export default function AppLayoutTopBar({ onOpenChat }: AppLayoutTopBarProps) {
   const { theme, setTheme } = useTheme();
   const { selectedArtist } = useArtistStore();
   const [isArtistSelectorOpen, setIsArtistSelectorOpen] = useState(false);
